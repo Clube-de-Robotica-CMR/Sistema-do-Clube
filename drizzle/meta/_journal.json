@@ -8,6 +8,20 @@
       "when": 1784228643990,
       "tag": "0000_chilly_calypso",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784231983770,
+      "tag": "0001_aspiring_energizer",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784234349508,
+      "tag": "0002_zippy_solo",
+      "breakpoints": true
     }
   ]
 }
