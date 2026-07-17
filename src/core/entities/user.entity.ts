@@ -2,6 +2,8 @@ import z from "zod";
 
 const RoleSchema = z.enum(["admin", "diretoria"])
 
+export type UserRole = z.infer<typeof RoleSchema>
+
 export const UserSchema = z.object({
     id: z.uuid('ID inválido ou obrigatório'),
     name: z.string().min(3, "O nome precisa ter, no mínimo, 3 letras"),

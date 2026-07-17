@@ -1,4 +1,4 @@
-import { CreateUserDTO, User } from "@/core/entities/user.entity";
+import { CreateUserDTO, User, UserRole } from "@/core/entities/user.entity";
 import { DBError } from "@/core/errors/db-error";
 import { UsersRepository } from "@/core/ports/users/users_repository";
 import { db } from "@/infra/db/drizzle/client";
@@ -11,40 +11,40 @@ export class DrizzleUsersRepository implements UsersRepository {
             id: dbUser.id,
             name: dbUser.name,
             password: dbUser.password,
-            role: dbUser.role as "admin" | "diretoria",
+            role: dbUser.role as UserRole,
             created_at: dbUser.created_at,
             updated_at: dbUser.updated_at,
         };
     }
 
-    async get_all(): Promise<User[] | undefined> {
+    async get_all(): Promise<User[] | null> {
         const result = await db.select().from(users_table)
-        if (!result[0]) return undefined
+        if (!result[0]) return null
         return result.map((user) => this.map_to_domain(user))
     }
 
-    async get_by_name(name: string): Promise<User | undefined> {
+    async get_by_name(name: string): Promise<User | null> {
         const result = await db
             .select()
             .from(users_table)
             .where(eq(users_table.name, name));
 
-        if (!result[0]) return undefined
+        if (!result[0]) return null
         return this.map_to_domain(result[0])
     }
 
-    async get_by_id(id: string): Promise<User | undefined> 
+    async get_by_id(id: string): Promise<User | null> 
     {
         const result = await db
             .select()
             .from(users_table)
             .where(eq(users_table.id, id));
 
-        if (!result[0]) return undefined
+        if (!result[0]) return null
         return this.map_to_domain(result[0])
     }
 
-    async save(user: CreateUserDTO): Promise<undefined> {
+    async save(user: CreateUserDTO): Promise<void> {
         const result = await db
             .insert(users_table)
             .values(user)
@@ -53,7 +53,7 @@ export class DrizzleUsersRepository implements UsersRepository {
         if (!result[0]) throw new DBError("Erro na criação de usuário")
     }
 
-    async update(user: User): Promise<undefined> {
+    async update(user: User): Promise<void> {
         const result = await db
             .update(users_table)
             .set(user)
@@ -63,7 +63,7 @@ export class DrizzleUsersRepository implements UsersRepository {
         if (!result[0]) throw new DBError("Erro ao tentar atualizar o usuário")
     }
 
-    async delete(id: string): Promise<undefined> {
+    async delete(id: string): Promise<void> {
         const result = await db
             .delete(users_table)
             .where(eq(users_table.id, id))
