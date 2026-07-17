@@ -16,8 +16,8 @@ export function api_handler(handler: AppRouteHandler) {
       {
         return res.status(400).json({
           ok: false,
-          message: 'Falha na validação de dados',
-          errors: z.treeifyError(error),
+          error: 'Falha na validação de dados',
+          details: z.treeifyError(error),
         });
       }
 
@@ -31,7 +31,7 @@ export function api_handler(handler: AppRouteHandler) {
 
         return res.status(error.status).json({
           ok: false,
-          message: error.message,
+          error: error.message,
         });
       }
 
@@ -42,7 +42,7 @@ export function api_handler(handler: AppRouteHandler) {
 
       return res.status(500).json({
         ok: false,
-        message: errorMessage,
+        error: errorMessage,
       });
     }
   };

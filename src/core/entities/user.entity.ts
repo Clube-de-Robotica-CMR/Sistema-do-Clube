@@ -3,7 +3,7 @@ import z from "zod";
 const RoleSchema = z.enum(["admin", "diretoria"])
 
 export const UserSchema = z.object({
-    id: z.uuid(),
+    id: z.uuid('ID inválido ou obrigatório'),
     name: z.string().min(3, "O nome precisa ter, no mínimo, 3 letras"),
     password: z.string().min(8, "A senha deve ter, no mínimo, 8 caracteres"),
     role: RoleSchema,
@@ -22,6 +22,9 @@ export const LoginUserSchema = CreateUserSchema.omit({role: true})
 export const UpdateUserSchema = UserSchema
     .omit({created_at: true})
     .partial()
+    .extend({
+      id: z.uuid('ID inválido ou obrigatório')
+    })
 
 export type Role = z.infer<typeof RoleSchema>
 export type User = z.infer<typeof UserSchema>

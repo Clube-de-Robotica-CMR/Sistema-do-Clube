@@ -1,20 +1,33 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { AppRouteHandler } from './api-handler';
-import { RouterError } from '@/core/errors/router-errors';
+import { RouterError } from '@/core/errors/router-error';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type ActionHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<any>;
+type Middleware = ((req: NextApiRequest, res: NextApiResponse) => Promise<any> | any) | void
 
-type RouterConfig = {
-  [key in HttpMethod]?: AppRouteHandler;
-};
+interface ActionRoutes {
+  [actionName: string]: ActionHandler;
+}
 
-export function create_router(routes: RouterConfig) {
+export function create_router(routes: ActionRoutes, middleware: Middleware) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
-    const method = req.method as HttpMethod;
-    const handler = routes[method];
+    if (middleware) await middleware(req, res)
 
-    if (!handler) throw new RouterError(`O método ${method} não existe`)
-    
+    if (req.method !== 'POST') {
+      throw new RouterError('Método não permitido. Utilize POST.');
+    }
+
+    const { action } = req.body;
+
+    if (!action) {
+      throw new RouterError('O campo \"action\" é obrigatório no corpo da requisição.' );
+    }
+
+    const handler = routes[action];
+
+    if (!handler) {
+      throw new RouterError(`Ação \"${action}\" não encontrada ou inválida.` );
+    }
+
     await handler(req, res);
   };
 }

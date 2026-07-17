@@ -5,6 +5,6 @@ export class RouterError extends AppError
 {
     constructor(msg: string)
     {
-        super(msg, 405)
+        super(msg, 400)
     }
 }
