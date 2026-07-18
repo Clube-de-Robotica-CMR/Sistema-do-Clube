@@ -25,7 +25,8 @@ export function create_router(routes: ActionRoutes, middleware?: Middleware) {
     const handler = routes[action];
 
     if (!handler) {
-      throw new RouterError(`Ação '${action}' não encontrada ou inválida.` );
+      const actions = Object.keys(routes).join(', ');
+      throw new RouterError(`Ação '${action}' não encontrada ou inválida. Tente uma das seguintes: ${actions}` );
     }
 
     await handler(req, res);
