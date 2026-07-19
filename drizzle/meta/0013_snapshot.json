@@ -1,5 +1,5 @@
 {
-  "id": "adf0714b-1a3a-464d-9e09-9f82a0afaa26",
+  "id": "fe2cb606-0817-4492-a802-ecfe2b06117d",
   "prevId": "d020a2f7-e3af-43ed-94d0-016a760ed4a5",
   "version": "7",
   "dialect": "postgresql",
@@ -125,6 +125,80 @@
         "year": {
           "name": "year",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.inventory": {
+      "name": "inventory",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "item": {
+          "name": "item",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "classification": {
+          "name": "classification",
+          "type": "classification_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "collection": {
+          "name": "collection",
+          "type": "collection_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "status_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location": {
+          "name": "location",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -545,6 +619,37 @@
         "1°",
         "2°",
         "3°"
+      ]
+    },
+    "public.classification_enum": {
+      "name": "classification_enum",
+      "schema": "public",
+      "values": [
+        "Microcontrolador",
+        "Atuador",
+        "Componente Mecânico",
+        "Sensor",
+        "Conector",
+        "Energia",
+        "Variados",
+        "Dispositivo de saída"
+      ]
+    },
+    "public.collection_enum": {
+      "name": "collection_enum",
+      "schema": "public",
+      "values": [
+        "Arduino",
+        "LEGO SPIKE",
+        "LEGO EV3"
+      ]
+    },
+    "public.status_enum": {
+      "name": "status_enum",
+      "schema": "public",
+      "values": [
+        "Funcionando",
+        "Sem funcionamento"
       ]
     },
     "public.attendance_status": {

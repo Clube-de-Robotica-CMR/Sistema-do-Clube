@@ -64,6 +64,41 @@
       "when": 1784462359989,
       "tag": "0008_faulty_radioactive_man",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1784466175020,
+      "tag": "0009_worried_krista_starr",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1784467111464,
+      "tag": "0010_gigantic_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1784467196702,
+      "tag": "0011_first_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1784467318951,
+      "tag": "0012_greedy_black_bird",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1784467384453,
+      "tag": "0013_clever_glorian",
+      "breakpoints": true
     }
   ]
 }
