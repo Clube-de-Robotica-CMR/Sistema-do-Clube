@@ -12,7 +12,7 @@ const meetingsRepo = new DrizzleMeetingsRepository();
 const meetingsUseCase = new MeetingsUseCase(meetingsRepo);
 
 const router = create_router({
-    "create_meeting": async (req, res) => {
+    "create": async (req, res) => {
         const data = get_data_from_request(req)
 
         const validatedBody = CreateMeetingSchema.parse(data)
@@ -29,7 +29,7 @@ const router = create_router({
         })
     },
 
-    "read_meetings": async (req, res) => {
+    "read": async (req, res) => {
         const data = get_data_from_request(req)
         const filters = MeetingsFilterSchema.parse(data)
 
@@ -61,7 +61,7 @@ const router = create_router({
         });
     },
 
-    'update_meeting': async (req, res) => {
+    'update': async (req, res) => {
         const data = get_data_from_request(req);
         
         const UpdateMeetingSchema = CreateMeetingSchema.partial().extend({
@@ -93,7 +93,7 @@ const router = create_router({
         });
     },
 
-    'delete_meeting': async (req, res) => {
+    'delete': async (req, res) => {
         const data = get_data_from_request(req);
         const { id } = z.object({ id: z.uuid('ID inválido') }).parse(data);
 

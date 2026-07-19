@@ -57,6 +57,13 @@
       "when": 1784402709204,
       "tag": "0007_confused_leopardon",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1784462359989,
+      "tag": "0008_faulty_radioactive_man",
+      "breakpoints": true
     }
   ]
 }
