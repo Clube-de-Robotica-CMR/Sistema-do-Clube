@@ -1,3 +1,111 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ===========================
+   Theme
+=========================== */
+
+:root {
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+
+  --background: #f8fafc;
+  --surface: #ffffff;
+
+  --text: #111827;
+  --text-muted: #6b7280;
+
+  --border: #e5e7eb;
+
+  --input: #f9fafb;
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, .08);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+}
+
+/* ===========================
+   Base
+=========================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__next {
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  font-family: "Inter", sans-serif;
+
+  background: linear-gradient(180deg,
+      #ffffff 0%,
+      #f5f3ff 100%);
+
+  color: var(--text);
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===========================
+   Inputs
+=========================== */
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/* ===========================
+   Scrollbar
+=========================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a78bfa;
+}
+
+/* ===========================
+   Selection
+=========================== */
+
+::selection {
+  background: #ddd6fe;
+}
