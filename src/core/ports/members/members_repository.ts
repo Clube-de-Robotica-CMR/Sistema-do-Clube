@@ -7,4 +7,5 @@ export interface MembersRepository {
   save(member: CreateMemberDTO): Promise<void>;
   update(member: Member): Promise<void>;
   delete(id: string): Promise<void>;
+  delete_all(): Promise<void>;
 }

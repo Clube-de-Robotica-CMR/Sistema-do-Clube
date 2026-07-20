@@ -101,6 +101,7 @@ Gerenciamento dos membros do clube.
 | `create` | `{ war_name, full_name, number, ... }` | Registra um novo membro garantindo que o número identificador seja único. | Autenticado |
 | `update` | `{ id, ...camposModificados }` | Atualiza o registro do membro mesclando os dados enviados e revalidando o schema completo. | Autenticado |
 | `delete` | `{ id }` | Remove o membro do sistema. | Autenticado |
+| `delete_all` | nenhum | Remove todos os membros do sistema. | Admin |
 
 ---
 

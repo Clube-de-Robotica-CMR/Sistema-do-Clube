@@ -6,7 +6,7 @@ import { members_table } from '@/infra/db/schemas/members.schema';
 import { eq, ilike, or, and, SQL } from 'drizzle-orm';
 
 export class DrizzleMembersRepository implements MembersRepository {
-  
+
   private mapToDomain(dbMember: any): Member {
     return {
       id: dbMember.id,
@@ -46,7 +46,7 @@ export class DrizzleMembersRepository implements MembersRepository {
     }
 
     const query = db.select().from(members_table);
-    
+
     if (conditions.length > 0) {
       query.where(and(...conditions));
     }
@@ -59,19 +59,19 @@ export class DrizzleMembersRepository implements MembersRepository {
 
   async get_by_id(id: string): Promise<Member | null> {
     const result = await db
-        .select().from(members_table)
-        .where(eq(members_table.id, id))
-        .limit(1);
-    
+      .select().from(members_table)
+      .where(eq(members_table.id, id))
+      .limit(1);
+
     if (!result[0]) return null;
     return this.mapToDomain(result[0]);
   }
 
   async get_by_number(number: string): Promise<Member | null> {
     const result = await db
-        .select().from(members_table)
-        .where(eq(members_table.number, number))
-        .limit(1);
+      .select().from(members_table)
+      .where(eq(members_table.number, number))
+      .limit(1);
 
     if (!result[0]) return null;
     return this.mapToDomain(result[0]);
@@ -79,9 +79,9 @@ export class DrizzleMembersRepository implements MembersRepository {
 
   async save(member: CreateMemberDTO): Promise<void> {
     const result = await db
-        .insert(members_table)
-        .values(member)
-        .returning();
+      .insert(members_table)
+      .values(member)
+      .returning();
 
     if (!result[0]) throw new DBError("Erro na criação de membro.")
   }
@@ -98,10 +98,18 @@ export class DrizzleMembersRepository implements MembersRepository {
 
   async delete(id: string): Promise<void> {
     const result = await db
-        .delete(members_table)
-        .where(eq(members_table.id, id))
-        .returning();
+      .delete(members_table)
+      .where(eq(members_table.id, id))
+      .returning();
 
     if (!result[0]) throw new DBError("Erro ao tentar deletar membro.");
+  }
+
+  async delete_all(): Promise<void> {
+    const result = await db
+      .delete(members_table)
+      .returning();
+
+    if (!result[0]) throw new DBError("Erro ao tentar deletar todos os membros.");
   }
 }

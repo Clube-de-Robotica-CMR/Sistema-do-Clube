@@ -3,9 +3,10 @@ import { create_router } from '@/infra/adapters/input/router';
 import { DrizzleMembersRepository } from '@/infra/adapters/output/drizzle/members_repository';
 import { CreateMemberSchema, UpdateMemberSchema, MemberSchema, SearchFilterSchema } from '@/core/entities/member.entity';
 import { NotFoundError, RequestError } from '@/core/errors/domain-errors';
-import { require_login } from '@/infra/adapters/input/require_login'; 
+import { require_login } from '@/infra/adapters/input/require_login';
 import { get_data_from_request } from '@/infra/adapters/input/get_data';
 import z from 'zod';
+import { require_admin } from '@/infra/adapters/input/require_admin';
 
 const membersRepo = new DrizzleMembersRepository();
 
@@ -18,7 +19,7 @@ const router = create_router({
         const members = await membersRepo.get_all(filters);
 
         if (!members) throw new NotFoundError("Membros não encontrados.")
-        
+
         return res.status(200).json({
             ok: true,
             data: members,
@@ -89,9 +90,20 @@ const router = create_router({
             ok: true,
             message: 'Membro removido com sucesso.',
         });
+    },
+
+    'delete_all': async (req, res) => {
+        require_admin(req, res);
+
+        await membersRepo.delete_all();
+
+        return res.status(200).json({
+            ok: true,
+            message: 'Todos os membros foram removidos com sucesso',
+        });
     }
 },
-    require_login 
+    require_login
 );
 
 export default api_handler(router);
