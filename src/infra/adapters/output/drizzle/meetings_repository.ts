@@ -6,7 +6,7 @@ import { meetings_table, attendance_table, attendanceStatusEnum } from '@/infra/
 import { eq, and, sql } from 'drizzle-orm';
 
 export class DrizzleMeetingsRepository implements MeetingsRepository {
-  
+
   private mapMeetingToDomain(dbMeeting: any): Meeting {
     return {
       id: dbMeeting.id,
@@ -29,7 +29,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
     };
   }
 
-  async save_meeting(meeting: CreateMeetingDTO & {year: number}): Promise<void> {
+  async save_meeting(meeting: CreateMeetingDTO & { year: number }): Promise<void> {
     const result = await db
       .insert(meetings_table)
       .values(meeting)
@@ -80,9 +80,15 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
       .where(eq(meetings_table.id, id))
       .returning();
 
-    // Como configuramos { onDelete: 'cascade' } no schema, 
-    // deletar o meeting já limpa automaticamente todas as presenças vinculadas a ele.
     if (!result[0]) throw new DBError("Erro ao tentar deletar o encontro.");
+  }
+
+  async delete_all_meetings(): Promise<void> {
+    const result = await db
+      .delete(meetings_table)
+      .returning();
+
+    if (!result[0]) throw new DBError("Erro ao tentar deletar todos os encontros.");
   }
 
   async save_attendances(
@@ -96,7 +102,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
       .values(attendances)
       .onConflictDoUpdate({
         target: [attendance_table.member_id, attendance_table.meeting_id],
-        set: { 
+        set: {
           status: sql`EXCLUDED.status`,
           updated_at: now,
         }
@@ -176,7 +182,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
         and(
           eq(attendance_table.member_id, member_id),
           eq(meetings_table.year, year),
-          eq(attendance_table.status, AttendanceStatusSchema.enum.Falta) 
+          eq(attendance_table.status, AttendanceStatusSchema.enum.Falta)
         )
       );
 

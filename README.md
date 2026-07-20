@@ -115,6 +115,7 @@ Gerenciamento de encontros, presenças e métricas de participação dos membros
 | `read` | `{ quarter, year }` | Lista todas as reuniões realizadas dentro do período informado. | Autenticado |
 | `update` | `{ id, quarter?, date? }` | Atualiza os dados de uma reunião. | Autenticado |
 | `delete` | `{ id }` | Remove a reunião e exclui em cascata todas as presenças associadas. | Autenticado |
+| `delete_all` | nenhum | Remove todos as reuniões e presenças do sistema. | Admin |
 | `save_attendances` | `{ meeting_id, attendances: [{ member_id, status }] }` | Registra ou atualiza, em lote, a lista de presenças da reunião. | Autenticado |
 | `get_metrics` | `{ member_id, year, quarter }` | Calcula a taxa de participação de um membro em um trimestre (1°, 2° ou 3°). | Autenticado |
 

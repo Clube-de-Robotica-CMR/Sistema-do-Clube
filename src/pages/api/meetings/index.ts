@@ -3,6 +3,7 @@ import { NotFoundError } from "@/core/errors/domain-errors";
 import { MeetingsUseCase } from "@/core/use-cases/meetings";
 import { api_handler } from "@/infra/adapters/input/api_handler";
 import { get_data_from_request } from "@/infra/adapters/input/get_data";
+import { require_admin } from "@/infra/adapters/input/require_admin";
 import { require_login } from "@/infra/adapters/input/require_login";
 import { create_router } from "@/infra/adapters/input/router";
 import { DrizzleMeetingsRepository } from "@/infra/adapters/output/drizzle/meetings_repository";
@@ -16,9 +17,9 @@ const router = create_router({
         const data = get_data_from_request(req)
 
         const validatedBody = CreateMeetingSchema.parse(data)
-        
+
         const meeting = {
-            ...validatedBody, 
+            ...validatedBody,
             year: validatedBody.date.getFullYear()
         }
         await meetingsRepo.save_meeting(meeting)
@@ -63,11 +64,11 @@ const router = create_router({
 
     'update': async (req, res) => {
         const data = get_data_from_request(req);
-        
+
         const UpdateMeetingSchema = CreateMeetingSchema.partial().extend({
             id: z.uuid('ID inválido')
         });
-        
+
         const validatedBody = UpdateMeetingSchema.parse(data);
 
         const oldMeeting = await meetingsRepo.get_meeting_by_id(validatedBody.id);
@@ -107,6 +108,17 @@ const router = create_router({
         return res.status(200).json({
             ok: true,
             message: 'Encontro e suas respectivas presenças removidos com sucesso.',
+        });
+    },
+
+    'delete_all': async (req, res) => {
+        require_admin(req, res);
+
+        await meetingsRepo.delete_all_meetings();
+
+        return res.status(200).json({
+            ok: true,
+            message: 'Todos os encontros e suas respectivas presenças removidos com sucesso.',
         });
     },
 
