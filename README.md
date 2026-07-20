@@ -75,6 +75,7 @@ Endpoints responsáveis pela autenticação e renovação de sessão.
 |---------|----------------|---------------|-----------|
 | `login` | `{ name, password }` | Valida as credenciais, gera o Access Token e define os cookies `access_token` e `refresh_token`. | Público |
 | `refresh` | Nenhum | Valida o `refresh_token` presente nos cookies, gera um novo Access Token e atualiza o cookie. | Público |
+| `me` | Nenhum | Valida o `access_token` presente nos cookies e retorna as informações do usuário. | Autenticado |
 
 ---
 

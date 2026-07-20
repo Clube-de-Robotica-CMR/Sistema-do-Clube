@@ -17,6 +17,7 @@ import {
 import 'dotenv/config';
 import { AuthError } from '@/core/errors/auth-error';
 import { get_data_from_request } from '@/infra/adapters/input/get_data';
+import { require_login } from '@/infra/adapters/input/require_login';
 
 const usersRepo = new DrizzleUsersRepository();
 const refreshTokensRepo = new DrizzleRefreshTokensRepository();
@@ -25,7 +26,7 @@ const hashService = new BcryptHashService();
 const router = create_router({
     'login': async (req, res) => {
         const data = get_data_from_request(req)
-        
+
         const bodyValidados = LoginUserSchema.parse(data);
 
         const user = await auth_user(bodyValidados, usersRepo, hashService);
@@ -127,7 +128,18 @@ const router = create_router({
                 role: user.role,
             }
         });
-    }
+    },
+
+    "me": async (req, res) => {
+
+        const user = require_login(req);
+
+        return res.json({
+            ok: true,
+            data: user,
+        });
+
+    },
 });
 
 export default api_handler(router);
