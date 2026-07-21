@@ -140,6 +140,47 @@ const router = create_router({
         });
 
     },
+
+    "logout": async (req, res) => {
+        const cookies = cookie.parseCookie(req.headers.cookie || "");
+        const refreshToken = cookies["refresh_token"];
+
+        if (refreshToken) {
+            await refreshTokensRepo.delete_by_token(refreshToken);
+        }
+
+        const isProd = process.env.NODE_ENV === "production";
+
+        const expiredAccessCookie = cookie.stringifySetCookie({
+            name: "access_token",
+            value: "",
+            httpOnly: true,
+            secure: isProd,
+            sameSite: "strict",
+            path: "/",
+            maxAge: 0,
+        });
+
+        const expiredRefreshCookie = cookie.stringifySetCookie({
+            name: "refresh_token",
+            value: "",
+            httpOnly: true,
+            secure: isProd,
+            sameSite: "strict",
+            path: "/",
+            maxAge: 0,
+        });
+
+        res.setHeader("Set-Cookie", [
+            expiredAccessCookie,
+            expiredRefreshCookie,
+        ]);
+
+        return res.status(200).json({
+            ok: true,
+            message: "Logout realizado com sucesso.",
+        });
+    },
 });
 
 export default api_handler(router);
