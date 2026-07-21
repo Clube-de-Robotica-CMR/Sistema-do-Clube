@@ -17,9 +17,9 @@ export class DrizzleUsersRepository implements UsersRepository {
         };
     }
 
-    async get_all(): Promise<User[] | null> {
+    async get_all(): Promise<User[]> {
         const result = await db.select().from(users_table)
-        if (!result[0]) return null
+        if (!result[0]) return []
         return result.map((user) => this.map_to_domain(user))
     }
 
@@ -33,8 +33,7 @@ export class DrizzleUsersRepository implements UsersRepository {
         return this.map_to_domain(result[0])
     }
 
-    async get_by_id(id: string): Promise<User | null> 
-    {
+    async get_by_id(id: string): Promise<User | null> {
         const result = await db
             .select()
             .from(users_table)

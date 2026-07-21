@@ -3,7 +3,7 @@ import { InventoryItem, CreateInventoryItemDTO, InventoryFilter } from '@/core/e
 export interface InventoryRepository {
     save(items: CreateInventoryItemDTO): Promise<void>;
     get_by_id(id: string): Promise<InventoryItem | null>;
-    get_items(filters: InventoryFilter): Promise<InventoryItem[] | null>;
+    get_items(filters: InventoryFilter): Promise<InventoryItem[]>;
     update(data: InventoryItem): Promise<void>;
     delete(id: string): Promise<void>;
 }

@@ -38,7 +38,7 @@ export class DrizzleInventoryRepository implements InventoryRepository {
         return result ? this.mapToDomain(result) : null
     }
 
-    async get_items(filters: InventoryFilter): Promise<InventoryItem[] | null> {
+    async get_items(filters: InventoryFilter): Promise<InventoryItem[]> {
         const conditions: SQL[] = [];
 
         if (filters.search) {
@@ -72,7 +72,7 @@ export class DrizzleInventoryRepository implements InventoryRepository {
             .from(inventory_table)
             .where(conditions.length > 0 ? and(...conditions) : undefined);
 
-        return results.length > 0 ? results.map(this.mapToDomain) : null;
+        return results.length > 0 ? results.map(this.mapToDomain) : [];
     }
 
     async update(data: InventoryItem): Promise<void> {

@@ -20,16 +20,16 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
             .select()
             .from(competitions_table)
             .where(eq(competitions_table.id, id));
-            
+
         return result || null;
     }
 
-    async get_all(): Promise<Competition[] | null> {
+    async get_all(): Promise<Competition[]> {
         const results = await db
             .select()
             .from(competitions_table);
-            
-        return results.length > 0 ? results : null;
+
+        return results.length > 0 ? results : [];
     }
 
     async update(competition: Competition): Promise<void> {
@@ -57,7 +57,7 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
         const rowsToInsert = data.results.map((res) => ({
             competition_id: data.competition_id,
             member_number: res.member_number,
-            member_war_name: res.member_war_name, 
+            member_war_name: res.member_war_name,
             placement: res.placement,
         }));
 
@@ -66,7 +66,7 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
             .values(rowsToInsert)
             .onConflictDoUpdate({
                 target: [competition_results_table.member_number, competition_results_table.competition_id],
-                set: { 
+                set: {
                     placement: sql`EXCLUDED.placement`,
                     member_war_name: sql`EXCLUDED.member_war_name`,
                     updated_at: new Date()
@@ -77,13 +77,13 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
         if (result.length === 0) throw new DBError("Erro o tentar salvar os resultados")
     }
 
-    async get_results_by_competition(competition_id: string): Promise<CompetitionResult[] | null> {
+    async get_results_by_competition(competition_id: string): Promise<CompetitionResult[]> {
         const results = await db
             .select()
             .from(competition_results_table)
             .where(eq(competition_results_table.competition_id, competition_id));
 
-        return results.length > 0 ? results : null;
+        return results.length > 0 ? results : [];
     }
 
     async delete_results(competition_id: string, member_numbers: string[]): Promise<void> {
@@ -106,7 +106,7 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
         const [result] = await db
             .select({
                 member_number: competition_results_table.member_number,
-                name: sql<string>`MAX(${competition_results_table.member_war_name})`, 
+                name: sql<string>`MAX(${competition_results_table.member_war_name})`,
                 gold_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['1°']} THEN 1 END`),
                 silver_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['2°']} THEN 1 END`),
                 bronze_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['3°']} THEN 1 END`),
@@ -124,7 +124,7 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
         } : null;
     }
 
-    async get_all_members_medals(): Promise<RawMemberMedalsDTO[] | null> {
+    async get_all_members_medals(): Promise<RawMemberMedalsDTO[]> {
         const results = await db
             .select({
                 member_number: competition_results_table.member_number,
@@ -136,7 +136,7 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
             .from(competition_results_table)
             .groupBy(competition_results_table.member_number);
 
-        if (results.length === 0) return null;
+        if (results.length === 0) return [];
 
         return results.map(row => ({
             member_number: row.member_number,

@@ -49,7 +49,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
     return this.mapMeetingToDomain(result[0]);
   }
 
-  async get_meetings_by_period(filters: FindMeetingsFilter): Promise<Meeting[] | null> {
+  async get_meetings_by_period(filters: FindMeetingsFilter): Promise<Meeting[]> {
     const result = await db
       .select()
       .from(meetings_table)
@@ -60,7 +60,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
         )
       );
 
-    if (result.length === 0) return null;
+    if (result.length === 0) return [];
     return result.map(this.mapMeetingToDomain);
   }
 
@@ -132,17 +132,17 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
     }
   }
 
-  async get_attendances_by_meeting(meeting_id: string): Promise<Attendance[] | null> {
+  async get_attendances_by_meeting(meeting_id: string): Promise<Attendance[]> {
     const result = await db
       .select()
       .from(attendance_table)
       .where(eq(attendance_table.meeting_id, meeting_id));
 
-    if (result.length === 0) return null;
+    if (result.length === 0) return [];
     return result.map(this.mapAttendanceToDomain);
   }
 
-  async get_member_attendances_by_period(member_id: string, filters: FindMeetingsFilter): Promise<Attendance[] | null> {
+  async get_member_attendances_by_period(member_id: string, filters: FindMeetingsFilter): Promise<Attendance[]> {
     const result = await db
       .select({
         id: attendance_table.id,
@@ -162,11 +162,11 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
         )
       );
 
-    if (result.length === 0) return null;
+    if (result.length === 0) return [];
     return result.map(this.mapAttendanceToDomain);
   }
 
-  async get_member_unjustified_absences_by_year(member_id: string, year: number): Promise<Attendance[] | null> {
+  async get_member_unjustified_absences_by_year(member_id: string, year: number): Promise<Attendance[]> {
     const result = await db
       .select({
         id: attendance_table.id,
@@ -186,7 +186,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
         )
       );
 
-    if (result.length === 0) return null;
+    if (result.length === 0) return [];
     return result.map(this.mapAttendanceToDomain);
   }
 }

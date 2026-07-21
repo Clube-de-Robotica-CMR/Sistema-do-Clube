@@ -23,7 +23,7 @@ export class DrizzleMembersRepository implements MembersRepository {
     };
   }
 
-  async get_all(filters?: FindMembersFilter): Promise<Member[] | null> {
+  async get_all(filters?: FindMembersFilter): Promise<Member[]> {
     const conditions = [];
 
     if (filters) {
@@ -52,7 +52,7 @@ export class DrizzleMembersRepository implements MembersRepository {
     }
 
     const result = await query;
-    if (!result[0]) return null
+    if (!result[0]) return []
 
     return result.map(this.mapToDomain);
   }
