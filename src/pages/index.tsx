@@ -1,45 +1,53 @@
-import { checkAuth } from "@/lib/auth";
-import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { GetServerSideProps } from "next";
 
-export default function HomePage() {
+import { checkAuth } from "@/lib/auth";
+import HomeLayout from "@/components/layout/home_layout";
+
+interface HomeProps {
+  role: "admin" | "diretoria";
+}
+
+export default function HomePage({ role }: HomeProps) {
   return (
     <>
       <Head>
         <title>Clube de Robótica</title>
+
         <meta
           name="description"
           content="Sistema de Gestão do Clube de Robótica"
         />
-        <link rel="icon" href="/favicon.ico" />
+
+        <link
+          rel="icon"
+          href="/favicon.ico"
+        />
       </Head>
 
-      <div className="flex h-screen items-center justify-center bg-zinc-50">
-        <h1 className="text-2xl font-bold text-zinc-950">
-          Painel do Clube de Robótica 🤖
-        </h1>
-      </div>
+      <HomeLayout role={role} />
     </>
   );
 }
 
-export const getServerSideProps: GetServerSideProps =
-  async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (
+  ctx
+) => {
+  const auth = await checkAuth(ctx);
 
-    const authenticated = await checkAuth(ctx);
-
-
-    if (!authenticated) {
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-
-
+  if (!auth.authenticated) {
+    console.log(auth)
     return {
-      props: {},
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
     };
+  }
+
+  return {
+    props: {
+      role: auth.user!.role,
+    },
   };
+};

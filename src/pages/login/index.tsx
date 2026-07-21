@@ -172,11 +172,10 @@ export default function LoginPage() {
 
 export const getServerSideProps: GetServerSideProps =
   async (ctx) => {
+    const user = await checkAuth(ctx);
 
-    const authenticated = await checkAuth(ctx);
 
-
-    if (authenticated) {
+    if (user.authenticated) {
       return {
         redirect: {
           destination: "/",

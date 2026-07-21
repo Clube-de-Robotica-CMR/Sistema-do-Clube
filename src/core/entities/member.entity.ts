@@ -22,19 +22,19 @@ export const MemberSchema = z.object({
     war_name: z.string(),
     full_name: z.string(),
     number: z
-            .string()
-            .regex(/^\d+$/, 'Deve conter apenas números.')
-            .min(4, "Mínimo de 4 dígitos."),
+        .string()
+        .regex(/^\d+$/, 'Deve conter apenas números.')
+        .min(4, "Mínimo de 4 dígitos."),
     class: z
-            .string()
-            .regex(/^\d+$/, 'Deve conter apenas números.')
-            .length(3, "A turma deve ter 3 dígitos."),
+        .string()
+        .regex(/^\d+$/, 'Deve conter apenas números.')
+        .length(3, "A turma deve ter 3 dígitos."),
     phone: z
-            .string()
-            .regex(/^\d+$/, 'Deve conter apenas números.')
-            .min(8, "Mínimo de 8 dígitos.")
-            .max(11, "Máximo de 11 dígitos.")
-            .optional(),
+        .string()
+        .regex(/^\d+$/, 'Deve conter apenas números.')
+        .min(8, "Mínimo de 8 dígitos.")
+        .max(11, "Máximo de 11 dígitos.")
+        .optional(),
 
     level: levelSchema,
     field: fieldSchema,
@@ -53,7 +53,7 @@ export const CreateMemberSchema = MemberSchema
     })
 
 export const UpdateMemberSchema = MemberSchema
-    .omit({created_at: true})
+    .omit({ created_at: true })
     .partial()
     .extend({
         id: z.uuid('ID inválido ou obrigatório')
@@ -61,3 +61,4 @@ export const UpdateMemberSchema = MemberSchema
 
 export type Member = z.infer<typeof MemberSchema>
 export type CreateMemberDTO = z.infer<typeof CreateMemberSchema>
+export type UpdateMemberDTO = z.infer<typeof UpdateMemberSchema>

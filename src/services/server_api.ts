@@ -6,17 +6,22 @@ export async function serverRpcClient(
     action: string,
     data?: unknown
 ) {
-    const cookie = ctx.req.headers.cookie;
+    const protocol =
+        process.env.NODE_ENV === "development"
+            ? "http"
+            : "https";
+
+    const host = process.env.HOST;
 
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${route}`,
+        `${protocol}://${host}${route}`,
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(cookie
+                ...(ctx.req.headers.cookie
                     ? {
-                        Cookie: cookie,
+                        Cookie: ctx.req.headers.cookie,
                     }
                     : {}),
             },
@@ -26,6 +31,13 @@ export async function serverRpcClient(
             }),
         }
     );
+
+    // Propaga cookies (refresh -> browser)
+    const setCookie = response.headers.get("set-cookie");
+
+    if (setCookie) {
+        ctx.res.setHeader("Set-Cookie", setCookie);
+    }
 
     return response.json();
 }
