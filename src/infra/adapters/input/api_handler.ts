@@ -1,4 +1,5 @@
 import { AppError } from '@/core/errors/app-error';
+import { RequestError } from '@/core/errors/domain-errors';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
 
@@ -12,19 +13,26 @@ export function api_handler(handler: AppRouteHandler) {
     try {
       await handler(req, res);
     } catch (error) {
-      if (error instanceof z.ZodError)
-      {
-        return res.status(400).json({
+      if (error instanceof z.ZodError) {
+        return res.status(200).json({
           ok: false,
           error: 'Falha na validação de dados',
-          details: z.treeifyError(error),
+          details: z.flattenError(error),
         });
       }
 
-      if (error instanceof AppError)
-      {
-        if (error.status == 500)
-        {
+      if (error instanceof RequestError) {
+        return res.status(error.status).json({
+          ok: false,
+          error: error.message,
+          details: {
+            fieldErrors: error.fieldErrors
+          }
+        });
+      }
+
+      if (error instanceof AppError) {
+        if (error.status == 500) {
           console.error(`[Server Error]: ${error.message}`)
           console.error(`[Stack]: ${error.stack}`)
         }

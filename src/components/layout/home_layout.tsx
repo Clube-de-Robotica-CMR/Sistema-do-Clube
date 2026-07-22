@@ -8,6 +8,7 @@ import {
     HOME_MODULE_STORAGE_KEY,
     SIDEBAR_COLLAPSED_STORAGE_KEY,
 } from "@/lib/home";
+import StudentsModule from "../modules/students";
 
 interface HomeLayoutProps {
     role: "admin" | "diretoria";
@@ -74,7 +75,8 @@ export default function HomeLayout({
                 return (
                     <div className="p-8">
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
-                            Alunos
+                            <StudentsModule role={role} />
+
                         </div>
                     </div>
                 );

@@ -1,9 +1,24 @@
-// src/app/services/api.ts
+import { ApiError } from "@/lib/api_error";
+import { ValidationError } from "@/lib/validation_error";
 
-export type ApiResponse<T> = 
+export type ApiResponse<T> =
   | { ok: true; data: T; message?: string }
   | { ok: true; message: string; data?: T }
-  | { ok: false; error: string };
+  | {
+    ok: false;
+    error: string;
+    details: {
+      formErrors: string[];
+      fieldErrors: Record<
+        string,
+        string[]
+      >;
+    };
+  }
+  | {
+    ok: false;
+    error: string;
+  };
 
 type Endpoints = 'auth' | 'users' | 'members' | 'meetings' | 'competitions' | 'inventory';
 
@@ -30,13 +45,23 @@ export async function rpcClient<T = any>(
       throw new Error(!errorData.ok ? errorData.error : 'Erro na comunicação com o servidor.');
     }
 
-    const result: ApiResponse<T> = await response.json();
+    const result: ApiResponse<T> =
+      await response.json();
 
     if (!result.ok) {
-      throw new Error(result.error);
+      if ("details" in result) {
+        throw new ValidationError(
+          result.error,
+          result.details
+        );
+      }
+
+      throw new ApiError(result.error);
     }
 
-    return (result.data !== undefined ? result.data : { message: result.message }) as T;
+    return result.data !== undefined
+      ? result.data
+      : ({ message: result.message } as T);
   } catch (error: any) {
     throw error;
   }

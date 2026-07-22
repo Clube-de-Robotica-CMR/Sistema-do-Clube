@@ -40,7 +40,12 @@ const router = create_router({
 
         const existingUser = await usersRepo.get_by_name(validatedBody.name);
         if (existingUser) {
-            throw new RequestError("Esse nome de usuário já está em uso.")
+            const msg = "Esse nome de usuário já está em uso.";
+            throw new RequestError(msg,
+                {
+                    "name": [msg]
+                }
+            )
         }
 
         const hashedPassword = await hashService.hash(validatedBody.password);

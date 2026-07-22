@@ -32,7 +32,12 @@ const router = create_router({
 
         const existingMember = await membersRepo.get_by_number(validatedBody.number);
         if (existingMember) {
-            throw new RequestError(`O membro de número "${validatedBody.number}" já está cadastrado.`);
+            const msg = `O aluno de número "${validatedBody.number}" já está cadastrado.`;
+            throw new RequestError(msg,
+                {
+                    "number": [msg]
+                }
+            );
         }
 
         await membersRepo.save(validatedBody);
@@ -55,7 +60,12 @@ const router = create_router({
         if (validatedBody.number && validatedBody.number !== oldMember.number) {
             const memberWithNumber = await membersRepo.get_by_number(validatedBody.number);
             if (memberWithNumber) {
-                throw new RequestError("Esse número de membro já está em uso por outro cadastro.");
+                const msg = "Esse número de aluno já está em uso por outro cadastro.";
+                throw new RequestError(msg,
+                    {
+                        "number": [msg]
+                    }
+                );
             }
         }
 

@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import { serverRpcClient } from "@/services/server_api";
+import { serverRpcClient, serverRpcData } from "@/services/server_api";
 
 export interface AuthUser {
     id: string;
@@ -29,7 +29,7 @@ export async function checkAuth(
     // Primeiro tenta usar o access_token atual
     if (hasAccessToken) {
         try {
-            const response = await serverRpcClient(
+            const user = await serverRpcData<AuthUser>(
                 ctx,
                 "/api/auth",
                 "me"
@@ -37,7 +37,7 @@ export async function checkAuth(
 
             return {
                 authenticated: true,
-                user: response.data,
+                user,
             };
         } catch (err) {
         }
@@ -52,7 +52,7 @@ export async function checkAuth(
                 "refresh"
             );
 
-            const response = await serverRpcClient(
+            const user = await serverRpcData<AuthUser>(
                 ctx,
                 "/api/auth",
                 "me"
@@ -60,7 +60,7 @@ export async function checkAuth(
 
             return {
                 authenticated: true,
-                user: response.data,
+                user,
             };
         } catch (err) {
             return {

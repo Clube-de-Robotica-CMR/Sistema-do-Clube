@@ -7,7 +7,10 @@ export class NotFoundError extends AppError {
 }
 
 export class RequestError extends AppError {
-    constructor(msg: string) {
+    fieldErrors: Record<string, string[]>
+
+    constructor(msg: string, fieldErrors: Record<string, string[]>) {
         super(msg, 200)
+        this.fieldErrors = fieldErrors
     }
 }

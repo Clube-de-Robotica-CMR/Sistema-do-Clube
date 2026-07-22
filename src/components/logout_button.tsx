@@ -3,7 +3,7 @@ import { LogOut } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { rpcClient } from "@/services/api";
 import { useState } from "react";
-import Dialog from "./ui/dialog";
+import ConfirmDialog from "./ui/confirm_dialog";
 
 interface LogoutButtonProps {
     collapsed: boolean;
@@ -41,7 +41,7 @@ export default function LogoutButton({ collapsed }: LogoutButtonProps) {
                 {!collapsed && <span className="font-medium">Sair</span>}
             </button>
 
-            <Dialog
+            <ConfirmDialog
                 open={dialogOpen}
                 variant="danger"
                 title="Sair da conta?"

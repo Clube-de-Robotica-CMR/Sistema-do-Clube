@@ -11,6 +11,7 @@ import { rpcClient } from "@/services/api";
 import Head from "next/head";
 import { checkAuth } from "@/lib/auth";
 import { GetServerSideProps } from "next";
+import { getErrorMessage } from "@/lib/error";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,8 +36,8 @@ export default function LoginPage() {
       });
 
       router.push("/");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
