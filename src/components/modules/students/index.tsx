@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
-import type { FindMembersFilter, Member } from "@/core/entities/member.entity";
+import type {
+    FindMembersFilter,
+    Member,
+} from "@/core/entities/member.entity";
 
 import {
     deleteAllMembers,
@@ -30,7 +33,9 @@ export default function StudentsModule({
     const [loading, setLoading] = useState(true);
 
     const [search, setSearch] = useState("");
-    const [filters, setFilters] = useState<FindMembersFilter>({})
+
+    const [filters, setFilters] =
+        useState<FindMembersFilter>({});
 
     const [filterOpen, setFilterOpen] =
         useState(false);
@@ -50,6 +55,13 @@ export default function StudentsModule({
     const [deleteAllOpen, setDeleteAllOpen] =
         useState(false);
 
+    const hasFilters = Object.values(filters).some(
+        (value) =>
+            value !== undefined &&
+            value !== "" &&
+            value !== false
+    );
+
     async function loadMembers(
         searchValue?: string,
         filterValue?: FindMembersFilter
@@ -58,9 +70,7 @@ export default function StudentsModule({
             setLoading(true);
 
             const response = await findMembers({
-                ...(
-                    filterValue ?? filters
-                ),
+                ...(filterValue ?? filters),
                 search: searchValue ?? search,
             });
 
@@ -95,11 +105,16 @@ export default function StudentsModule({
     }
 
     function handleEdit(member: Member) {
-        setEditingMember(member)
+        setEditingMember(member);
     }
 
     function handleDelete(member: Member) {
-        setDeletingMember(member)
+        setDeletingMember(member);
+    }
+
+    function handlePDF() {
+        // TODO:
+        // gerar PDF dos alunos
     }
 
     async function handleDeleteAll() {
@@ -119,15 +134,18 @@ export default function StudentsModule({
                     </h1>
 
                     <p className="mt-2 text-slate-500">
-                        Gerencie todos os alunos do clube.
+                        Gerencie todos os alunos do
+                        clube.
                     </p>
                 </header>
 
                 <StudentsToolbar
                     role={role}
                     search={search}
+                    hasFilters={hasFilters}
                     onSearch={setSearch}
                     onFilter={handleFilter}
+                    onExportPdf={handlePDF}
                     onCreate={handleCreate}
                     onDeleteAll={() =>
                         setDeleteAllOpen(true)
@@ -155,7 +173,9 @@ export default function StudentsModule({
             <StudentDetailsDialog
                 member={viewingMember}
                 open={viewingMember !== null}
-                onClose={() => setViewingMember(null)}
+                onClose={() =>
+                    setViewingMember(null)
+                }
             />
 
             <StudentFiltersDialog
@@ -177,14 +197,18 @@ export default function StudentsModule({
             <EditStudentDialog
                 member={editingMember}
                 open={editingMember !== null}
-                onClose={() => setEditingMember(null)}
+                onClose={() =>
+                    setEditingMember(null)
+                }
                 onUpdated={loadMembers}
             />
 
             <DeleteStudentDialog
                 member={deletingMember}
                 open={deletingMember !== null}
-                onClose={() => setDeletingMember(null)}
+                onClose={() =>
+                    setDeletingMember(null)
+                }
                 onDeleted={loadMembers}
             />
 
@@ -195,7 +219,9 @@ export default function StudentsModule({
                 description="Todos os alunos cadastrados serão removidos permanentemente."
                 confirmText="Apagar"
                 cancelText="Cancelar"
-                onClose={() => setDeleteAllOpen(false)}
+                onClose={() =>
+                    setDeleteAllOpen(false)
+                }
                 onConfirm={handleDeleteAll}
             />
         </>

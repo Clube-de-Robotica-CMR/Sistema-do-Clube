@@ -1,4 +1,9 @@
-import { Plus, Search, SlidersHorizontal, Trash2 } from "lucide-react";
+import {
+    FileText,
+    Plus,
+    SlidersHorizontal,
+    Trash2,
+} from "lucide-react";
 
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
@@ -9,9 +14,13 @@ interface StudentsToolbarProps {
 
     search: string;
 
+    hasFilters: boolean;
+
     onSearch(value: string): void;
 
     onFilter(): void;
+
+    onExportPdf(): void;
 
     onCreate(): void;
 
@@ -21,8 +30,10 @@ interface StudentsToolbarProps {
 export default function StudentsToolbar({
     role,
     search,
+    hasFilters,
     onSearch,
     onFilter,
+    onExportPdf,
     onCreate,
     onDeleteAll,
 }: StudentsToolbarProps) {
@@ -51,15 +62,26 @@ export default function StudentsToolbar({
                         "justify-center",
                         "rounded-xl",
                         "border",
-                        "border-slate-200",
                         "bg-white",
-                        "transition",
-                        "hover:border-violet-300",
-                        "hover:bg-violet-50"
+                        "transition-all",
+                        "duration-200",
+                        hasFilters
+                            ? "border-violet-600 text-violet-700 ring-2 ring-violet-200"
+                            : "border-slate-200 hover:border-violet-300 hover:bg-violet-50"
                     )}
                 >
                     <SlidersHorizontal size={20} />
                 </button>
+
+                <Button
+                    variant="secondary"
+                    className="h-12 w-auto px-5"
+                    onClick={onExportPdf}
+                >
+                    <FileText size={18} />
+
+                    <span>PDF</span>
+                </Button>
             </div>
 
             <div className="flex gap-3">
