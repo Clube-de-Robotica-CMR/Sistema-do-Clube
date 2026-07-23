@@ -7,9 +7,11 @@ import { require_admin } from "@/infra/adapters/input/require_admin";
 import { require_login } from "@/infra/adapters/input/require_login";
 import { create_router } from "@/infra/adapters/input/router";
 import { DrizzleMeetingsRepository } from "@/infra/adapters/output/drizzle/meetings_repository";
+import { DrizzleMembersRepository } from "@/infra/adapters/output/drizzle/members_repository";
 import z from "zod";
 
 const meetingsRepo = new DrizzleMeetingsRepository();
+const membersRepo = new DrizzleMembersRepository();
 const meetingsUseCase = new MeetingsUseCase(meetingsRepo);
 
 const router = create_router({
@@ -43,12 +45,11 @@ const router = create_router({
         })
     },
 
-    'get_metrics': async (req, res) => {
+    'get_metrics_by_member': async (req, res) => {
         const data = get_data_from_request(req);
 
         const QuerySchema = z.object({
             member_id: z.uuid('ID de membro inválido'),
-            year: z.coerce.number().min(2026),
             quarter: QuarterSchema,
         });
 
@@ -60,6 +61,29 @@ const router = create_router({
             ok: true,
             data: metrics,
         });
+    },
+
+    'get_all_metrics': async (req, res) => {
+        const data = get_data_from_request(req);
+
+        const { quarter } = z.object({ quarter: QuarterSchema }).parse(data)
+
+        const members = await membersRepo.get_all();
+
+        const metrics = await Promise.all(
+            members.map((member) => ({
+                ...members,
+                ...meetingsUseCase.get_member_metrics({
+                    member_id: member.id,
+                    quarter,
+                })
+            }))
+        );
+
+        return res.status(200).json({
+            ok: true,
+            data: metrics,
+        })
     },
 
     'update': async (req, res) => {
