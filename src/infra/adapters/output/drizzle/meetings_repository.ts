@@ -12,7 +12,6 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
       id: dbMeeting.id,
       date: dbMeeting.date,
       quarter: dbMeeting.quarter as Quarter,
-      year: dbMeeting.year,
       created_at: dbMeeting.created_at,
       updated_at: dbMeeting.updated_at,
     };
@@ -53,7 +52,6 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
   async get_meetings(filters: Partial<FindMeetingsFilter>): Promise<Meeting[]> {
     const conditions = [];
 
-    if (filters.year) conditions.push(eq(meetings_table.year, filters.year));
     if (filters.quarter) conditions.push(eq(meetings_table.quarter, filters.quarter));
 
     const result = await db
@@ -158,7 +156,6 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
       .where(
         and(
           eq(attendance_table.member_id, member_id),
-          eq(meetings_table.year, filters.year),
           eq(meetings_table.quarter, filters.quarter)
         )
       );
@@ -167,7 +164,7 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
     return result.map(this.mapAttendanceToDomain);
   }
 
-  async get_member_unjustified_absences_by_year(member_id: string, year: number): Promise<Attendance[]> {
+  async get_member_unjustified_absences(member_id: string): Promise<Attendance[]> {
     const result = await db
       .select({
         id: attendance_table.id,
@@ -182,7 +179,6 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
       .where(
         and(
           eq(attendance_table.member_id, member_id),
-          eq(meetings_table.year, year),
           eq(attendance_table.status, AttendanceStatusSchema.enum.Falta)
         )
       );

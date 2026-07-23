@@ -34,17 +34,11 @@ export default function MeetingFiltersDialog({
     onClose,
     onApply,
 }: MeetingFiltersDialogProps) {
-    const [year, setYear] = useState("");
-
     const [quarter, setQuarter] =
         useState("");
 
     useEffect(() => {
         if (!open) return;
-
-        setYear(
-            filters.year?.toString() ?? ""
-        );
 
         setQuarter(
             filters.quarter ?? ""
@@ -53,10 +47,6 @@ export default function MeetingFiltersDialog({
 
     function handleApply() {
         onApply({
-            year: year
-                ? Number(year)
-                : undefined,
-
             quarter: quarter
                 ? (quarter as Quarter)
                 : undefined,
@@ -64,7 +54,6 @@ export default function MeetingFiltersDialog({
     }
 
     function handleClear() {
-        setYear("");
         setQuarter("");
 
         onApply({});
@@ -89,18 +78,6 @@ export default function MeetingFiltersDialog({
                 </div>
 
                 <div className="space-y-5">
-                    <Input
-                        label="Ano"
-                        type="number"
-                        min={2026}
-                        value={year}
-                        onChange={(e) =>
-                            setYear(
-                                e.target.value
-                            )
-                        }
-                    />
-
                     <label className="space-y-2 block">
                         <span className="text-sm font-medium">
                             Trimestre

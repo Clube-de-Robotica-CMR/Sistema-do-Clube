@@ -13,5 +13,5 @@ export interface MeetingsRepository {
   delete_attendances(meeting_id: string, member_ids: string[]): Promise<void>;
 
   get_member_attendances_by_period(member_id: string, filters: FindMeetingsFilter): Promise<Attendance[]>;
-  get_member_unjustified_absences_by_year(member_id: string, year: number): Promise<Attendance[]>;
+  get_member_unjustified_absences(member_id: string): Promise<Attendance[]>;
 }

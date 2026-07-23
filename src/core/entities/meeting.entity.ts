@@ -10,7 +10,6 @@ export const MeetingSchema = z.object({
     id: z.uuid(),
     date: z.coerce.date(),
     quarter: QuarterSchema,
-    year: z.number().min(2026),
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
 });
@@ -30,7 +29,6 @@ export const CreateMeetingSchema = MeetingSchema.pick({
 });
 
 export const MeetingsFilterSchema = MeetingSchema.pick({
-    year: true,
     quarter: true,
 })
 

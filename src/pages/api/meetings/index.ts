@@ -76,12 +76,9 @@ const router = create_router({
             throw new NotFoundError("O encontro solicitado não existe.");
         }
 
-        const year = validatedBody.date ? new Date(validatedBody.date).getFullYear() : oldMeeting.year;
-
         const updatedMeetingData = {
             ...oldMeeting,
             ...validatedBody,
-            year,
             updated_at: new Date()
         };
 

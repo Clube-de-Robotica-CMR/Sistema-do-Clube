@@ -77,11 +77,12 @@ export default function AttendanceEditor({
                         "
                     >
                         <div>
+                            <p className="font-semibold">
+                                {member.war_name}
+                            </p>
+
                             <p className="text-sm text-slate-500">
                                 {member.number}
-                            </p>
-                            <p className="font-medium">
-                                {member.war_name}
                             </p>
 
                         </div>

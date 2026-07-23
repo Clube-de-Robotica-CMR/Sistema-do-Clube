@@ -4,7 +4,6 @@ import { AttendanceStatus, AttendanceStatusSchema, FindMeetingsFilter, MetricSea
 
 export interface MemberMetricsResponse {
   member_id: string;
-  year: number;
   quarter: Quarter;
   total_meetings_in_quarter: number;
   presents_in_quarter: number;
@@ -35,7 +34,7 @@ export class MeetingsUseCase {
   }
 
   async get_member_metrics(search: MetricSearch): Promise<MemberMetricsResponse> {
-    const periodFilter: FindMeetingsFilter = { year: search.year, quarter: search.quarter };
+    const periodFilter: FindMeetingsFilter = { quarter: search.quarter };
 
     const allMeetings = await this.meetingsRepository.get_meetings(periodFilter);
     const totalMeetings = allMeetings ? allMeetings.length : 0;
@@ -57,7 +56,7 @@ export class MeetingsUseCase {
       gradeBonus = 0.5;
     }
 
-    const unjustifiedAbsences = await this.meetingsRepository.get_member_unjustified_absences_by_year(search.member_id, search.year);
+    const unjustifiedAbsences = await this.meetingsRepository.get_member_unjustified_absences(search.member_id);
     const totalUnjustifiedAbsences = unjustifiedAbsences ? unjustifiedAbsences.length : 0;
 
     const maxUnjustifiedAbsences = 5;
@@ -65,7 +64,6 @@ export class MeetingsUseCase {
 
     return {
       member_id: search.member_id,
-      year: search.year,
       quarter: search.quarter,
       total_meetings_in_quarter: totalMeetings,
       presents_in_quarter: presents,
