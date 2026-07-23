@@ -22,19 +22,19 @@ const router = create_router({
             ...validatedBody,
             year: validatedBody.date.getFullYear()
         }
-        await meetingsRepo.save_meeting(meeting)
+        const result = await meetingsRepo.save_meeting(meeting)
 
         return res.status(200).json({
             ok: true,
-            message: "Encontro criado com sucesso.",
+            data: result,
         })
     },
 
     "read": async (req, res) => {
         const data = get_data_from_request(req)
-        const filters = MeetingsFilterSchema.parse(data)
+        const filters = MeetingsFilterSchema.partial().parse(data)
 
-        const meetings = await meetingsRepo.get_meetings_by_period(filters)
+        const meetings = await meetingsRepo.get_meetings(filters)
         if (!meetings) throw new NotFoundError("Não foi encontrado nenhum encontro.")
 
         return res.status(200).json({
@@ -133,6 +133,18 @@ const router = create_router({
             message: 'Lista de presença registrada/atualizada com sucesso.',
         });
     },
+
+    "find_attendances": async (req, res) => {
+        const data = get_data_from_request(req);
+        const { meeting_id } = z.object({ meeting_id: z.uuid('ID inválido') }).parse(data);
+
+        const attendances = await meetingsRepo.get_attendances_by_meeting(meeting_id)
+
+        return res.status(200).json({
+            ok: true,
+            data: attendances,
+        })
+    }
 },
     require_login
 );

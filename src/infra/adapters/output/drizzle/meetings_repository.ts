@@ -29,13 +29,14 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
     };
   }
 
-  async save_meeting(meeting: CreateMeetingDTO & { year: number }): Promise<void> {
+  async save_meeting(meeting: CreateMeetingDTO & { year: number }): Promise<Meeting> {
     const result = await db
       .insert(meetings_table)
       .values(meeting)
       .returning();
 
     if (!result[0]) throw new DBError("Erro ao tentar cadastrar o encontro.");
+    return result[0];
   }
 
   async get_meeting_by_id(id: string): Promise<Meeting | null> {

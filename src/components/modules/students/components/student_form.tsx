@@ -9,7 +9,7 @@ import type {
 
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
-import { ValidationError } from "@/lib/validation_error";
+import { FieldErrors, ValidationError } from "@/lib/validation_error";
 
 interface StudentFormProps {
     initialData?: Partial<Member>;
@@ -32,8 +32,6 @@ const fields: MemberField[] = [
     "Mecatrônica",
     "Indefinido",
 ];
-
-type FieldErrors = Record<string, string>;
 
 export default function StudentForm({
     initialData,

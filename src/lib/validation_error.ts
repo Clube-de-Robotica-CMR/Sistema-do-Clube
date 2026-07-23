@@ -1,10 +1,10 @@
+export type FieldErrors = Record<string, string>;
+
+
 export interface ValidationDetails {
     formErrors: string[];
 
-    fieldErrors: Record<
-        string,
-        string[]
-    >;
+    fieldErrors: FieldErrors;
 }
 
 export class ValidationError extends Error {

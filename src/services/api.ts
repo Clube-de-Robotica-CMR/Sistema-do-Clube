@@ -1,5 +1,5 @@
 import { ApiError } from "@/lib/api_error";
-import { ValidationError } from "@/lib/validation_error";
+import { FieldErrors, ValidationError } from "@/lib/validation_error";
 
 export type ApiResponse<T> =
   | { ok: true; data: T; message?: string }
@@ -9,10 +9,7 @@ export type ApiResponse<T> =
     error: string;
     details: {
       formErrors: string[];
-      fieldErrors: Record<
-        string,
-        string[]
-      >;
+      fieldErrors: FieldErrors;
     };
   }
   | {
@@ -61,7 +58,7 @@ export async function rpcClient<T = any>(
 
     return result.data !== undefined
       ? result.data
-      : ({ message: result.message } as T);
+      : result.message! as T;
   } catch (error: any) {
     throw error;
   }

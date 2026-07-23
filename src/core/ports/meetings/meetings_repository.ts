@@ -1,7 +1,7 @@
 import { Meeting, Attendance, CreateMeetingDTO, FindMeetingsFilter, CreateAttendanceDTO } from '@/core/entities/meeting.entity';
 
 export interface MeetingsRepository {
-  save_meeting(meeting: CreateMeetingDTO): Promise<void>;
+  save_meeting(meeting: CreateMeetingDTO): Promise<Meeting>;
   get_meeting_by_id(id: string): Promise<Meeting | null>;
   get_meetings(filters: Partial<FindMeetingsFilter>): Promise<Meeting[]>;
   update_meeting(meeting: Meeting): Promise<void>;
