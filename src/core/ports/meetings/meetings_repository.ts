@@ -3,7 +3,7 @@ import { Meeting, Attendance, CreateMeetingDTO, FindMeetingsFilter, CreateAttend
 export interface MeetingsRepository {
   save_meeting(meeting: CreateMeetingDTO): Promise<void>;
   get_meeting_by_id(id: string): Promise<Meeting | null>;
-  get_meetings_by_period(filters: FindMeetingsFilter): Promise<Meeting[]>;
+  get_meetings(filters: Partial<FindMeetingsFilter>): Promise<Meeting[]>;
   update_meeting(meeting: Meeting): Promise<void>;
   delete_meeting(id: string): Promise<void>;
   delete_all_meetings(): Promise<void>;

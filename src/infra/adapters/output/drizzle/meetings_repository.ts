@@ -49,16 +49,16 @@ export class DrizzleMeetingsRepository implements MeetingsRepository {
     return this.mapMeetingToDomain(result[0]);
   }
 
-  async get_meetings_by_period(filters: FindMeetingsFilter): Promise<Meeting[]> {
+  async get_meetings(filters: Partial<FindMeetingsFilter>): Promise<Meeting[]> {
+    const conditions = [];
+
+    if (filters.year) conditions.push(eq(meetings_table.year, filters.year));
+    if (filters.quarter) conditions.push(eq(meetings_table.quarter, filters.quarter));
+
     const result = await db
       .select()
       .from(meetings_table)
-      .where(
-        and(
-          eq(meetings_table.year, filters.year),
-          eq(meetings_table.quarter, filters.quarter)
-        )
-      );
+      .where(conditions.length > 0 ? and(...conditions) : undefined);
 
     if (result.length === 0) return [];
     return result.map(this.mapMeetingToDomain);
