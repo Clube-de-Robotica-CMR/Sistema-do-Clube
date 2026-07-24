@@ -1,4 +1,4 @@
-import { CreateCompetitionSchema, CompetitionSchema, SaveCompetitionResultsSchema } from "@/core/entities/competition.entity";
+import { CreateCompetitionSchema, CompetitionSchema, SaveCompetitionResultsSchema, CompetitionFiltersSchema } from "@/core/entities/competition.entity";
 import { NotFoundError } from "@/core/errors/domain-errors";
 import { CompetitionResultsUseCase } from "@/core/use-cases/competitions";
 import { api_handler } from "@/infra/adapters/input/api_handler";
@@ -15,21 +15,25 @@ const router = create_router({
     "create": async (req, res) => {
         const data = get_data_from_request(req);
         const validatedBody = CreateCompetitionSchema.parse(data);
-        
+
         const competition = {
-            ...validatedBody, 
+            ...validatedBody,
             year: validatedBody.date.getFullYear()
         };
-        await competitionsRepo.save(competition);
+        const result = await competitionsRepo.save(competition);
 
         return res.status(200).json({
             ok: true,
-            message: "Competição criada com sucesso.",
+            data: result,
         });
     },
 
-    "read_all": async (req, res) => {
-        const competitions = await competitionsRepo.get_all();
+    "read": async (req, res) => {
+        const data = get_data_from_request(req);
+
+        const filters = CompetitionFiltersSchema.parse(data);
+
+        const competitions = await competitionsRepo.get_all(filters);
         if (!competitions) throw new NotFoundError("Nenhuma competição foi encontrada.");
 
         return res.status(200).json({
@@ -53,7 +57,7 @@ const router = create_router({
 
     "update": async (req, res) => {
         const data = get_data_from_request(req);
-        
+
         const UpdateCompetitionSchema = CreateCompetitionSchema.partial().extend({
             id: z.uuid('ID inválido')
         });
@@ -126,8 +130,8 @@ const router = create_router({
 
     "get_member_score": async (req, res) => {
         const data = get_data_from_request(req);
-        const { member_number } = z.object({ 
-            member_number: z.string().min(4, 'Número do membro inválido') 
+        const { member_number } = z.object({
+            member_number: z.string().min(4, 'Número do membro inválido')
         }).parse(data);
 
         const score = await competitionsUseCase.get_member_score(member_number);

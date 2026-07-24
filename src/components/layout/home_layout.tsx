@@ -11,6 +11,7 @@ import {
 import StudentsModule from "../modules/students";
 import MeetingsModule from "../modules/meetings";
 import BonusModule from "../modules/bonus";
+import CompetitionsModule from "../modules/competitions";
 
 interface HomeLayoutProps {
     role: "admin" | "diretoria";
@@ -105,7 +106,7 @@ export default function HomeLayout({
                 return (
                     <div className="p-8">
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
-                            Competições
+                            <CompetitionsModule />
                         </div>
                     </div>
                 );

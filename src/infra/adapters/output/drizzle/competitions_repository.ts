@@ -1,18 +1,19 @@
 import { competitions_table, competition_results_table } from '@/infra/db/schemas/competitions.schema';
 import { CompetitionsRepository, RawMemberMedalsDTO } from '@/core/ports/competitions/competitions_repository';
-import { Competition, CompetitionResult, CreateCompetitionDTO, PlacementSchema, SaveCompetitionResultsDTO } from '@/core/entities/competition.entity';
-import { eq, inArray, and, sql, count } from 'drizzle-orm';
+import { Competition, CompetitionFilters, CompetitionResult, CreateCompetitionDTO, PlacementSchema, SaveCompetitionResultsDTO } from '@/core/entities/competition.entity';
+import { eq, inArray, and, sql, count, ilike } from 'drizzle-orm';
 import { db } from '@/infra/db/drizzle/client';
 import { DBError } from '@/core/errors/db-error';
 
 export class DrizzleCompetitionsRepository implements CompetitionsRepository {
-    async save(competition: CreateCompetitionDTO & { year: number }): Promise<void> {
+    async save(competition: CreateCompetitionDTO & { year: number }): Promise<Competition> {
         const result = await db
             .insert(competitions_table)
             .values(competition)
             .returning();
 
         if (result.length === 0) throw new DBError("Erro na criação de competição");
+        return result[0]
     }
 
     async get_by_id(id: string): Promise<Competition | null> {
@@ -24,10 +25,20 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
         return result || null;
     }
 
-    async get_all(): Promise<Competition[]> {
+    async get_all(filters: CompetitionFilters): Promise<Competition[]> {
+        const conditions = [];
+
+        if (filters.search) {
+            const searchPattern = `%${filters.search}%`;
+            conditions.push(ilike(competitions_table.name, searchPattern));
+        }
+
+        if (filters.year) conditions.push(eq(competitions_table.year, filters.year));
+
         const results = await db
             .select()
-            .from(competitions_table);
+            .from(competitions_table)
+            .where(conditions.length > 0 ? and(...conditions) : undefined);
 
         return results.length > 0 ? results : [];
     }

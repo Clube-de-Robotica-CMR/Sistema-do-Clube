@@ -11,6 +11,15 @@ export const CompetitionSchema = z.object({
     updated_at: z.coerce.date(),
 });
 
+export const CompetitionFiltersSchema = CompetitionSchema
+    .pick({
+        year: true,
+    })
+    .extend({
+        search: z.string(),
+    })
+    .partial();
+
 export const CreateCompetitionSchema = CompetitionSchema.pick({
     name: true,
     date: true,
@@ -35,6 +44,7 @@ export const SaveCompetitionResultsSchema = z.object({
 });
 
 export type Competition = z.infer<typeof CompetitionSchema>;
+export type CompetitionFilters = z.infer<typeof CompetitionFiltersSchema>;
 export type CompetitionResult = z.infer<typeof CompetitionResultSchema>;
 export type Placement = z.infer<typeof PlacementSchema>;
 export type CreateCompetitionDTO = z.infer<typeof CreateCompetitionSchema>;

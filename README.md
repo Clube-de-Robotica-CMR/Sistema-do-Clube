@@ -132,7 +132,7 @@ Gerenciamento das competições, resultados e ranking dos membros.
 | Action | Dados (`data`) | Comportamento | Permissão |
 |---------|----------------|---------------|-----------|
 | `create` | `{ name, date }` | Registra uma nova competição. | Autenticado |
-| `read_all` | Nenhum | Lista todas as competições cadastradas. | Autenticado |
+| `read` | `{ search?, year? }` | Lista todas as competições cadastradas que estejam de acordo com os filtros. | Autenticado |
 | `read_by_id` | `{ id }` | Retorna os detalhes de uma competição específica. | Autenticado |
 | `update` | `{ id, name?, date? }` | Atualiza os dados da competição. | Autenticado |
 | `delete` | `{ id }` | Remove a competição e seus respectivos resultados. | Autenticado |

@@ -1,4 +1,4 @@
-import { Competition, CompetitionResult, CreateCompetitionDTO, SaveCompetitionResultsDTO } from '@/core/entities/competition.entity';
+import { Competition, CompetitionFilters, CompetitionResult, CreateCompetitionDTO, SaveCompetitionResultsDTO } from '@/core/entities/competition.entity';
 
 export interface RawMemberMedalsDTO {
     member_number: string;
@@ -9,9 +9,9 @@ export interface RawMemberMedalsDTO {
 }
 
 export interface CompetitionsRepository {
-    save(competition: CreateCompetitionDTO & { year: number }): Promise<void>;
+    save(competition: CreateCompetitionDTO & { year: number }): Promise<Competition>;
     get_by_id(id: string): Promise<Competition | null>;
-    get_all(): Promise<Competition[]>;
+    get_all(filters: CompetitionFilters): Promise<Competition[]>;
     update(competition: Competition): Promise<void>;
     delete(id: string): Promise<void>;
 
