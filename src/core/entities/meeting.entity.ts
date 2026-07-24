@@ -32,9 +32,7 @@ export const MeetingsFilterSchema = MeetingSchema.pick({
     quarter: true,
 })
 
-export const MetricSearchSchema = MeetingsFilterSchema.extend({
-    member_id: z.uuid(),
-})
+export const MetricSearchSchema = MeetingsFilterSchema
 
 export const CreateAttendanceSchema = AttendanceSchema.pick({
     member_id: true,

@@ -33,13 +33,13 @@ export class MeetingsUseCase {
     await this.meetingsRepository.save_attendances(attendances);
   }
 
-  async get_member_metrics(search: MetricSearch): Promise<MemberMetricsResponse> {
+  async get_member_metrics(search: MetricSearch, member_id: string): Promise<MemberMetricsResponse> {
     const periodFilter: FindMeetingsFilter = { quarter: search.quarter };
 
     const allMeetings = await this.meetingsRepository.get_meetings(periodFilter);
     const totalMeetings = allMeetings ? allMeetings.length : 0;
 
-    const memberAttendances = await this.meetingsRepository.get_member_attendances_by_period(search.member_id, periodFilter);
+    const memberAttendances = await this.meetingsRepository.get_member_attendances_by_period(member_id, periodFilter);
 
     const presents = memberAttendances
       ? memberAttendances.filter(att => att.status === AttendanceStatusSchema.enum.Presente).length
@@ -56,14 +56,14 @@ export class MeetingsUseCase {
       gradeBonus = 0.5;
     }
 
-    const unjustifiedAbsences = await this.meetingsRepository.get_member_unjustified_absences(search.member_id);
+    const unjustifiedAbsences = await this.meetingsRepository.get_member_unjustified_absences(member_id);
     const totalUnjustifiedAbsences = unjustifiedAbsences ? unjustifiedAbsences.length : 0;
 
     const maxUnjustifiedAbsences = 5;
     const isAtRiskOfExpulsion = totalUnjustifiedAbsences >= maxUnjustifiedAbsences;
 
     return {
-      member_id: search.member_id,
+      member_id,
       quarter: search.quarter,
       total_meetings_in_quarter: totalMeetings,
       presents_in_quarter: presents,

@@ -17,7 +17,37 @@ export type ApiResponse<T> =
     error: string;
   };
 
-type Endpoints = 'auth' | 'users' | 'members' | 'meetings' | 'competitions' | 'inventory';
+type Endpoints =
+  | "auth"
+  | "users"
+  | "members"
+  | "meetings"
+  | "competitions"
+  | "inventory";
+
+let refreshPromise: Promise<void> | null = null;
+
+async function doRequest(
+  endpoint: Endpoints,
+  action: string,
+  data?: any
+) {
+  const response = await fetch(`/api/${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ action, data }),
+  });
+
+  return {
+    response,
+    body: await response
+      .json()
+      .catch(() => ({})),
+  };
+}
 
 /**
  * Cliente HTTP responsável por disparar as requisições RPC para o backend.
@@ -28,38 +58,71 @@ export async function rpcClient<T = any>(
   action: string,
   data?: any
 ): Promise<T> {
-  try {
-    const response = await fetch(`/api/${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ action, data }),
-    });
+  let {
+    response,
+    body: result,
+  } = await doRequest(
+    endpoint,
+    action,
+    data
+  );
 
-    if (!response.ok) {
-      const errorData: ApiResponse<any> = await response.json().catch(() => ({}));
-      throw new Error(!errorData.ok ? errorData.error : 'Erro na comunicação com o servidor.');
-    }
-
-    const result: ApiResponse<T> =
-      await response.json();
-
-    if (!result.ok) {
-      if ("details" in result) {
-        throw new ValidationError(
-          result.error,
-          result.details
-        );
+  // Access token expirou
+  if (
+    response.status === 401 &&
+    !(endpoint === "auth" && action === "refresh")
+  ) {
+    try {
+      if (!refreshPromise) {
+        refreshPromise = doRequest(
+          "auth",
+          "refresh"
+        ).then(({ response }) => {
+          if (!response.ok) {
+            throw new Error();
+          }
+        });
       }
 
-      throw new ApiError(result.error);
+      await refreshPromise;
+    } catch {
+      window.location.href = "/login";
+      throw new ApiError("Sessão expirada.");
+    } finally {
+      refreshPromise = null;
     }
 
-    return result.data !== undefined
-      ? result.data
-      : result.message! as T;
-  } catch (error: any) {
-    throw error;
+    // Repete a requisição original
+    ({
+      response,
+      body: result,
+    } = await doRequest(
+      endpoint,
+      action,
+      data
+    ));
   }
+
+  if (!response.ok) {
+    throw new ApiError(
+      !result.ok
+        ? result.error
+        : "Erro na comunicação com o servidor."
+    );
+  }
+
+  if (!result.ok) {
+    if ("details" in result) {
+      throw new ValidationError(
+        result.error,
+        result.details
+      );
+    }
+
+    throw new ApiError(result.error);
+  }
+
+  return result.data !== undefined
+    ? result.data
+    : (result.message as T);
 }

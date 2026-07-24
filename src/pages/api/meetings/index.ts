@@ -1,4 +1,4 @@
-import { CreateMeetingSchema, MeetingSchema, MeetingsFilterSchema, QuarterSchema, RegisterAttendanceSchema } from "@/core/entities/meeting.entity";
+import { CreateMeetingSchema, MeetingSchema, MeetingsFilterSchema, MetricSearchSchema, QuarterSchema, RegisterAttendanceSchema } from "@/core/entities/meeting.entity";
 import { NotFoundError } from "@/core/errors/domain-errors";
 import { MeetingsUseCase } from "@/core/use-cases/meetings";
 import { api_handler } from "@/infra/adapters/input/api_handler";
@@ -48,14 +48,11 @@ const router = create_router({
     'get_metrics_by_member': async (req, res) => {
         const data = get_data_from_request(req);
 
-        const QuerySchema = z.object({
-            member_id: z.uuid('ID de membro inválido'),
-            quarter: QuarterSchema,
-        });
+        const { quarter, member_id } = MetricSearchSchema.extend({
+            member_id: z.uuid("ID inválido ou não existente."),
+        }).parse(data);
 
-        const validatedBody = QuerySchema.parse(data);
-
-        const metrics = await meetingsUseCase.get_member_metrics(validatedBody)
+        const metrics = await meetingsUseCase.get_member_metrics({ quarter }, member_id)
 
         return res.status(200).json({
             ok: true,
@@ -66,17 +63,16 @@ const router = create_router({
     'get_all_metrics': async (req, res) => {
         const data = get_data_from_request(req);
 
-        const { quarter } = z.object({ quarter: QuarterSchema }).parse(data)
+        const { quarter } = MetricSearchSchema.parse(data)
 
         const members = await membersRepo.get_all();
 
         const metrics = await Promise.all(
-            members.map((member) => ({
-                ...members,
-                ...meetingsUseCase.get_member_metrics({
-                    member_id: member.id,
+            members.map(async (member) => ({
+                ...member,
+                ...(await meetingsUseCase.get_member_metrics({
                     quarter,
-                })
+                }, member.id))
             }))
         );
 

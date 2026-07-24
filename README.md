@@ -121,7 +121,7 @@ Gerenciamento de encontros, presenças e métricas de participação dos membros
 | `find_attendances` | `{ meeting_id }` | Busca todas as presenças e faltas de uma reunião específica. | Autenticado |
 | `save_attendances` | `{ meeting_id, attendances: [{ member_id, status }] }` | Registra ou atualiza, em lote, a lista de presenças da reunião. | Autenticado |
 | `get_metrics_by_member` | `{ member_id, quarter }` | Calcula a taxa de participação de um membro em um trimestre (1°, 2° ou 3°). | Autenticado |
-| `get_all_metrics` | nenhum | Retorna as métricas de todos os membros. | Autenticado |
+| `get_all_metrics` | `{ quarter }` | Retorna as métricas de todos os membros. | Autenticado |
 
 ---
 

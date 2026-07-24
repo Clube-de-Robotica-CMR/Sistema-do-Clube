@@ -10,6 +10,7 @@ import {
 } from "@/lib/home";
 import StudentsModule from "../modules/students";
 import MeetingsModule from "../modules/meetings";
+import BonusModule from "../modules/bonus";
 
 interface HomeLayoutProps {
     role: "admin" | "diretoria";
@@ -95,7 +96,7 @@ export default function HomeLayout({
                 return (
                     <div className="p-8">
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
-                            Bônus (GIP)
+                            <BonusModule />
                         </div>
                     </div>
                 );
