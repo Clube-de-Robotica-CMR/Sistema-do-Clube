@@ -14,6 +14,7 @@ import BonusModule from "../modules/bonus";
 import CompetitionsModule from "../modules/competitions";
 import RankingModule from "../modules/ranking";
 import InventoryModule from "../modules/inventory";
+import UsersModule from "../modules/users";
 
 interface HomeLayoutProps {
     role: "admin" | "diretoria";
@@ -135,7 +136,7 @@ export default function HomeLayout({
                 return (
                     <div className="p-8">
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
-                            Usuários
+                            <UsersModule />
                         </div>
                     </div>
                 );

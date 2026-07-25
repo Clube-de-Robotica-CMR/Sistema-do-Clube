@@ -1,4 +1,3 @@
-import users from "@/pages/api/users";
 import { RoleSchema, UpdateUserDTO, UserSchema } from "../entities/user.entity";
 import { NotFoundError, UnauthorizedError } from "../errors/domain-errors";
 import { HashService } from "../ports/auth/hash_service";
