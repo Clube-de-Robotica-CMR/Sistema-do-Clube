@@ -2,7 +2,7 @@ import z from 'zod';
 
 export const InventoryClassificationSchema = z.enum(
     [
-        'Microcontrolador', 'Atuador', 'Componente Mecânico', 'Sensor', 'Conector', 
+        'Microcontrolador', 'Atuador', 'Componente Mecânico', 'Sensor', 'Conector',
         'Energia', 'Variados', 'Dispositivo de saída'
     ]
 )
@@ -22,11 +22,10 @@ export const InventoryItemSchema = z.object({
 });
 
 export const InventoryFilterSchema = InventoryItemSchema
-    .omit({
-        id: true,
-        item: true,
-        created_at: true,
-        updated_at: true,
+    .pick({
+        classification: true,
+        collection: true,
+        status: true,
     })
     .extend({
         search: z.string(),

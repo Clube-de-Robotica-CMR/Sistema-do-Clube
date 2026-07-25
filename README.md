@@ -149,7 +149,7 @@ Gerenciamento do inventário de peças, kits e equipamentos do laboratório.
 
 | Action | Dados (`data`) | Comportamento | Permissão |
 |---------|----------------|---------------|-----------|
-| `read` | Filtros opcionais: `{ search?, classification?, collection?, status?, location? }` | Executa busca textual (`ILIKE`) combinando os filtros informados. | Autenticado |
+| `read` | Filtros opcionais: `{ search?, classification?, collection?, status? }` | Executa busca textual (`ILIKE`) combinando os filtros informados. | Autenticado |
 | `create` | `{ item, quantity, classification, collection, status, location }` | Adiciona um novo item ao inventário. | Autenticado |
 | `update` | `{ id, ...camposModificados }` | Atualiza informações como quantidade, status ou localização de um item. | Autenticado |
 | `delete` | `{ id }` | Remove um item do inventário. | Autenticado |

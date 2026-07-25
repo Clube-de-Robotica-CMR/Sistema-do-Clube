@@ -43,7 +43,8 @@ export class DrizzleInventoryRepository implements InventoryRepository {
 
         if (filters.search) {
             conditions.push(
-                ilike(inventory_table.item, `%${filters.search}%`)
+                ilike(inventory_table.item, `%${filters.search}%`),
+                ilike(inventory_table.location, `%${filters.search}%`)
             );
         }
 
@@ -57,14 +58,6 @@ export class DrizzleInventoryRepository implements InventoryRepository {
 
         if (filters.status) {
             conditions.push(eq(inventory_table.status, filters.status));
-        }
-
-        if (filters.location) {
-            conditions.push(ilike(inventory_table.location, `%${filters.location}%`));
-        }
-
-        if (filters.quantity !== undefined) {
-            conditions.push(eq(inventory_table.quantity, filters.quantity));
         }
 
         const results = await db

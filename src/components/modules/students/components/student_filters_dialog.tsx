@@ -5,10 +5,12 @@ import Card from "@/components/ui/card";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 
-import type {
-    FindMembersFilter,
-    MemberField,
-    MemberLevel,
+import {
+    fieldSchema,
+    levelSchema,
+    type FindMembersFilter,
+    type MemberField,
+    type MemberLevel,
 } from "@/core/entities/member.entity";
 
 interface StudentFiltersDialogProps {
@@ -23,17 +25,13 @@ interface StudentFiltersDialogProps {
 
 const levels: (MemberLevel | "")[] = [
     "",
-    "Nível B",
-    "Nível A",
-    "Indefinido",
-];
+    ...Object.values(levelSchema.enum),
+]
 
 const fields: (MemberField | "")[] = [
     "",
-    "Programação",
-    "Mecatrônica",
-    "Indefinido",
-];
+    ...Object.values(fieldSchema.enum),
+]
 
 export default function StudentFiltersDialog({
     open,
