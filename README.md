@@ -100,6 +100,7 @@ Gerenciamento dos membros do clube.
 | Action | Dados (`data`) | Comportamento | Permissão |
 |---------|----------------|---------------|-----------|
 | `read` | Filtros opcionais: `{ search?, number?, name?, ... }` | Busca e filtra a listagem de membros. | Autenticado |
+| `get_report` | Filtros opcionais: `{ search?, number?, name?, ... }` | Retorna o relatório de membros baseado nos filtros. | Autenticado |
 | `create` | `{ war_name, full_name, number, ... }` | Registra um novo membro garantindo que o número identificador seja único. | Autenticado |
 | `update` | `{ id, ...camposModificados }` | Atualiza o registro do membro mesclando os dados enviados e revalidando o schema completo. | Autenticado |
 | `delete` | `{ id }` | Remove o membro do sistema. | Autenticado |

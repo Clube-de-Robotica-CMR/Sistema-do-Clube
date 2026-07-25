@@ -30,7 +30,7 @@ let refreshPromise: Promise<void> | null = null;
 async function doRequest(
   endpoint: Endpoints,
   action: string,
-  data?: any
+  data: any = {}
 ) {
   const response = await fetch(`/api/${endpoint}`, {
     method: "POST",
@@ -56,7 +56,7 @@ async function doRequest(
 export async function rpcClient<T = any>(
   endpoint: Endpoints,
   action: string,
-  data?: any
+  data?: any,
 ): Promise<T> {
   let {
     response,

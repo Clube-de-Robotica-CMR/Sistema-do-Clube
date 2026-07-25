@@ -21,6 +21,8 @@ import EditStudentDialog from "./components/edit_student_dialog";
 import DeleteStudentDialog from "./components/delete_student_dialog";
 import StudentDetailsDialog from "./components/student_details_dialog";
 import StudentFiltersDialog from "./components/student_filters_dialog";
+import { generateStudentsPDF } from "@/lib/students_pdf";
+import ExportPdfDialog from "./components/export_pdf_dialog";
 
 interface StudentsModuleProps {
     role: "admin" | "diretoria";
@@ -54,6 +56,9 @@ export default function StudentsModule({
 
     const [deleteAllOpen, setDeleteAllOpen] =
         useState(false);
+
+    const [pdfOpen, setPdfOpen] = useState(false);
+
 
     const hasFilters = Object.values(filters).some(
         (value) =>
@@ -113,8 +118,7 @@ export default function StudentsModule({
     }
 
     function handlePDF() {
-        // TODO:
-        // gerar PDF dos alunos
+        setPdfOpen(true);
     }
 
     async function handleDeleteAll() {
@@ -223,6 +227,12 @@ export default function StudentsModule({
                     setDeleteAllOpen(false)
                 }
                 onConfirm={handleDeleteAll}
+            />
+
+            <ExportPdfDialog
+                open={pdfOpen}
+                onClose={() => setPdfOpen(false)}
+                onPreparePdf={generateStudentsPDF}
             />
         </>
     );

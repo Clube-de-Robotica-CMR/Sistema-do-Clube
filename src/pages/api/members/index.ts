@@ -7,8 +7,12 @@ import { require_login } from '@/infra/adapters/input/require_login';
 import { get_data_from_request } from '@/infra/adapters/input/get_data';
 import z from 'zod';
 import { require_admin } from '@/infra/adapters/input/require_admin';
+import { GetStudentsReportUseCase } from '@/core/use-cases/members';
+import { DrizzleMeetingsRepository } from '@/infra/adapters/output/drizzle/meetings_repository';
 
 const membersRepo = new DrizzleMembersRepository();
+const meetingsRepo = new DrizzleMeetingsRepository();
+const membersUseCase = new GetStudentsReportUseCase(membersRepo, meetingsRepo)
 
 const router = create_router({
     'read': async (req, res) => {
@@ -110,6 +114,21 @@ const router = create_router({
         return res.status(200).json({
             ok: true,
             message: 'Todos os membros foram removidos com sucesso',
+        });
+    },
+
+    'get_report': async (req, res) => {
+        const data = get_data_from_request(req);
+
+        const filters = SearchFilterSchema.parse(data);
+
+        const report = await membersUseCase.execute(filters);
+
+        if (!report) throw new NotFoundError("Membros não encontrados.")
+
+        return res.status(200).json({
+            ok: true,
+            data: report,
         });
     }
 },
