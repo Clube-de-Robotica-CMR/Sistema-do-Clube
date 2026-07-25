@@ -1,9 +1,11 @@
 import { competitions_table, competition_results_table } from '@/infra/db/schemas/competitions.schema';
 import { CompetitionsRepository, RawMemberMedalsDTO } from '@/core/ports/competitions/competitions_repository';
 import { Competition, CompetitionFilters, CompetitionResult, CreateCompetitionDTO, PlacementSchema, SaveCompetitionResultsDTO } from '@/core/entities/competition.entity';
-import { eq, inArray, and, sql, count, ilike } from 'drizzle-orm';
+import { eq, inArray, and, sql, count, ilike, ne } from 'drizzle-orm';
 import { db } from '@/infra/db/drizzle/client';
 import { DBError } from '@/core/errors/db-error';
+import { members_table } from '@/infra/db/schemas/members.schema';
+import { levelSchema } from '@/core/entities/member.entity';
 
 export class DrizzleCompetitionsRepository implements CompetitionsRepository {
     async save(competition: CreateCompetitionDTO & { year: number }): Promise<Competition> {
@@ -123,7 +125,14 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
                 bronze_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['3°']} THEN 1 END`),
             })
             .from(competition_results_table)
-            .where(eq(competition_results_table.member_number, member_number))
+            .innerJoin(
+                members_table,
+                eq(competition_results_table.member_number, members_table.number)
+            )
+            .where(and(
+                ne(members_table.level, levelSchema.enum['Nível A']),
+                eq(competition_results_table.member_number, member_number)
+            ))
             .groupBy(competition_results_table.member_number);
 
         return result ? {
@@ -139,12 +148,17 @@ export class DrizzleCompetitionsRepository implements CompetitionsRepository {
         const results = await db
             .select({
                 member_number: competition_results_table.member_number,
-                name: sql<string>`MAX(${competition_results_table.member_war_name})`,
+                name: sql<string>`MAX(${members_table.war_name ?? competition_results_table.member_war_name})`,
                 gold_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['1°']} THEN 1 END`),
                 silver_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['2°']} THEN 1 END`),
                 bronze_count: count(sql`CASE WHEN ${competition_results_table.placement} = ${PlacementSchema.enum['3°']} THEN 1 END`),
             })
             .from(competition_results_table)
+            .innerJoin(
+                members_table,
+                eq(competition_results_table.member_number, members_table.number)
+            )
+            .where(ne(members_table.level, levelSchema.enum['Nível A']))
             .groupBy(competition_results_table.member_number);
 
         if (results.length === 0) return [];

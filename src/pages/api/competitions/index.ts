@@ -120,7 +120,6 @@ const router = create_router({
         const { id } = z.object({ id: z.uuid('ID inválido') }).parse(data);
 
         const results = await competitionsRepo.get_results_by_competition(id);
-        if (!results) throw new NotFoundError("Nenhum resultado encontrado para esta competição.");
 
         return res.status(200).json({
             ok: true,
@@ -135,17 +134,15 @@ const router = create_router({
         }).parse(data);
 
         const score = await competitionsUseCase.get_member_score(member_number);
-        if (!score) throw new NotFoundError("Nenhum histórico de pontuação encontrado para este membro.");
 
         return res.status(200).json({
             ok: true,
-            data: score
+            data: score ? score : {}
         });
     },
 
     "get_ranking": async (req, res) => {
         const ranking = await competitionsUseCase.get_ranked_members();
-        if (!ranking) throw new NotFoundError("Nenhum membro pontuado para gerar o ranking.");
 
         return res.status(200).json({
             ok: true,

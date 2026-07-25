@@ -11,15 +11,15 @@ export interface MemberScoreResponse {
 }
 
 export class CompetitionResultsUseCase {
-    constructor(private competitionsRepository: CompetitionsRepository) {}
+    constructor(private competitionsRepository: CompetitionsRepository) { }
 
     calculate_total_points(medals: { gold_count: number, silver_count: number, bronze_count: number }): number {
         const gold_medal_points = 3;
         const silver_medal_points = 2;
         const bronze_medal_points = 1;
         return (
-            (medals.gold_count * gold_medal_points) 
-            + (medals.silver_count * silver_medal_points) 
+            (medals.gold_count * gold_medal_points)
+            + (medals.silver_count * silver_medal_points)
             + (medals.bronze_count * bronze_medal_points)
         );
     };
@@ -52,16 +52,16 @@ export class CompetitionResultsUseCase {
         };
     }
 
-    async get_ranked_members(): Promise<MemberScoreResponse[] | null> {
+    async get_ranked_members(): Promise<MemberScoreResponse[]> {
         const allMedals = await this.competitionsRepository.get_all_members_medals();
-        if (!allMedals) return null;
+        if (allMedals.length === 0) return [];
 
         const ranked: MemberScoreResponse[] = allMedals.map((medals) => {
             const total_points = this.calculate_total_points({
-            gold_count: medals.gold_count,
-            silver_count: medals.silver_count,
-            bronze_count: medals.bronze_count
-        });
+                gold_count: medals.gold_count,
+                silver_count: medals.silver_count,
+                bronze_count: medals.bronze_count
+            });
             const can_ascend = this.can_ascend(total_points);
 
             return {
@@ -74,11 +74,11 @@ export class CompetitionResultsUseCase {
                 can_ascend,
             };
         });
-        
+
         const filteredAndSorted = ranked
             .filter((member) => member.total_points > 0)
             .sort((a, b) => b.total_points - a.total_points);
 
-        return filteredAndSorted.length > 0 ? filteredAndSorted : null;
+        return filteredAndSorted.length > 0 ? filteredAndSorted : [];
     }
 }

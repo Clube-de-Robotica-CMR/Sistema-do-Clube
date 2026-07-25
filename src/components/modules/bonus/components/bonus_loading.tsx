@@ -5,7 +5,7 @@ export default function BonusLoading() {
         <Card className="overflow-hidden rounded-3xl p-0">
             <table className="w-full border-collapse">
                 <thead className="bg-slate-50">
-                    <tr>
+                    <tr className="text-left text-sm text-slate-500">
                         <th className="px-6 py-4 text-left">Nº</th>
                         <th className="px-6 py-4 text-left">Nome de guerra</th>
                         <th className="px-6 py-4 text-left">Turma</th>

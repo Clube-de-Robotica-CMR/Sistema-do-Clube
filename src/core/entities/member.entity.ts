@@ -1,7 +1,7 @@
 import z from "zod";
 
-const levelSchema = z.enum(["Nível B", "Nível A", "Indefinido"])
-const fieldSchema = z.enum(["Programação", "Mecatrônica", "Indefinido"])
+export const levelSchema = z.enum(["Nível B", "Nível A", "Indefinido"])
+export const fieldSchema = z.enum(["Programação", "Mecatrônica", "Indefinido"])
 
 export type MemberLevel = z.infer<typeof levelSchema>
 export type MemberField = z.infer<typeof fieldSchema>
