@@ -87,8 +87,8 @@ Gerenciamento dos usuários da plataforma. Todas as operações exigem permissã
 | Action | Dados (`data`) | Comportamento | Permissão |
 |---------|----------------|---------------|-----------|
 | `read` | Nenhum | Retorna a lista de usuários omitindo as senhas por segurança. | Admin |
-| `create` | `{ name, password, role }` | Registra um novo usuário com a senha criptografada utilizando Bcrypt. | Admin |
-| `update` | `{ id, name?, password?, role? }` | Atualiza parcial ou totalmente os dados de um usuário existente. | Admin |
+| `create` | `{ name, password }` | Registra um novo usuário com a senha criptografada utilizando Bcrypt. | Admin |
+| `update` | `{ id, name?, password? }` | Atualiza parcial ou totalmente os dados de um usuário existente. | Admin |
 | `delete` | `{ id }` | Remove permanentemente um usuário do banco de dados. | Admin |
 
 ---

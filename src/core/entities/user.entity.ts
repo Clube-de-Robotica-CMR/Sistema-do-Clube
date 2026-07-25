@@ -1,6 +1,6 @@
 import z from "zod";
 
-const RoleSchema = z.enum(["admin", "diretoria"])
+export const RoleSchema = z.enum(["admin", "diretoria"])
 
 export type UserRole = z.infer<typeof RoleSchema>
 
@@ -16,16 +16,15 @@ export const UserSchema = z.object({
 export const CreateUserSchema = UserSchema.pick({
     name: true,
     password: true,
-    role: true
 })
 
-export const LoginUserSchema = CreateUserSchema.omit({role: true})
+export const LoginUserSchema = CreateUserSchema
 
 export const UpdateUserSchema = UserSchema
-    .omit({created_at: true})
+    .omit({ created_at: true })
     .partial()
     .extend({
-      id: z.uuid('ID inválido ou obrigatório')
+        id: z.uuid('ID inválido ou obrigatório')
     })
 
 export type Role = z.infer<typeof RoleSchema>

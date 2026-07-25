@@ -7,9 +7,11 @@ import z from 'zod';
 import { NotFoundError, RequestError } from '@/core/errors/domain-errors';
 import { require_admin } from '@/infra/adapters/input/require_admin';
 import { get_data_from_request } from '@/infra/adapters/input/get_data';
+import { UsersUseCase } from '@/core/use-cases/users';
 
 const usersRepo = new DrizzleUsersRepository();
 const hashService = new BcryptHashService();
+const usersUseCase = new UsersUseCase(usersRepo, hashService)
 
 const router = create_router({
     'read': async (req, res) => {
@@ -53,7 +55,6 @@ const router = create_router({
         const newUser = {
             name: validatedBody.name,
             password: hashedPassword,
-            role: validatedBody.role,
         }
 
         await usersRepo.save(newUser);
@@ -65,29 +66,11 @@ const router = create_router({
     },
 
     'update': async (req, res) => {
-        const data = get_data_from_request(req)
+        const data = get_data_from_request(req);
 
-        const validatedBody = UpdateUserSchema.parse(data)
+        const validatedBody = UpdateUserSchema.parse(data);
 
-        if (validatedBody.password) {
-            validatedBody.password = await hashService.hash(validatedBody.password);
-        }
-
-        const oldUser = await usersRepo.get_by_id(validatedBody.id)
-        if (!oldUser) throw new NotFoundError("O usuário que você está tentando atualizar não existe.")
-
-        const newUserData = {
-            id: validatedBody.id ?? oldUser.id,
-            name: validatedBody.name ?? oldUser.name,
-            password: validatedBody.password ?? oldUser.password,
-            role: validatedBody.role ?? oldUser.role,
-            created_at: oldUser.created_at,
-            updated_at: new Date()
-        }
-
-        const newUser = UserSchema.parse(newUserData)
-
-        await usersRepo.update(newUser);
+        await usersUseCase.update(validatedBody);
 
         return res.status(200).json({
             ok: true,
@@ -100,10 +83,7 @@ const router = create_router({
 
         const { id } = z.object({ id: z.uuid('ID inválido') }).parse(data);
 
-        const oldUser = await usersRepo.get_by_id(id)
-        if (!oldUser) throw new NotFoundError("O usuário não existe.")
-
-        await usersRepo.delete(id);
+        await usersUseCase.delete(id);
 
         return res.status(200).json({
             ok: true,

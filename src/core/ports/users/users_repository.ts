@@ -5,6 +5,6 @@ export interface UsersRepository {
     get_by_name(name: string): Promise<User | null>
     get_by_id(id: string): Promise<User | null>
     save(user: CreateUserDTO): Promise<void>
-    update(user: UpdateUserDTO): Promise<void>
+    update(user: User): Promise<void>
     delete(id: string): Promise<void>
 }

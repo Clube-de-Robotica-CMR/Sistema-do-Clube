@@ -14,3 +14,9 @@ export class RequestError extends AppError {
         this.fieldErrors = fieldErrors
     }
 }
+
+export class UnauthorizedError extends AppError {
+    constructor(msg: string) {
+        super(msg, 200)
+    }
+}
