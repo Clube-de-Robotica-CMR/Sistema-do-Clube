@@ -30,7 +30,8 @@ export const MemberSchema = z.object({
         .regex(/^\d+$/, 'Deve conter apenas números.')
         .length(3, "A turma deve ter 3 dígitos."),
     phone: z
-        .string(),
+        .string()
+        .optional(),
 
     level: levelSchema,
     field: fieldSchema,
