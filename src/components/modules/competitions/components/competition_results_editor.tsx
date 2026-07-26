@@ -33,7 +33,7 @@ export default function CompetitionResultsEditor({
     }
 
     return (
-        <div className="space-y-8">
+        <div className="max-h-[40vh] space-y-3 overflow-y-auto pr-2">
             <PodiumSection
                 title="1°"
                 results={results.filter(

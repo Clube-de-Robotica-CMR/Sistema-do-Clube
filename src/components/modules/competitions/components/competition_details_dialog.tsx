@@ -236,7 +236,7 @@ export default function CompetitionDetailsDialog({
                             )}
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="max-h-[40vh] space-y-3 overflow-y-auto pr-2">
                             {/* Card 1° Lugar */}
                             <Card className="rounded-2xl p-5">
                                 <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
