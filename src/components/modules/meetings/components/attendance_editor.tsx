@@ -52,9 +52,8 @@ export default function AttendanceEditor({
         }
     }
 
-
     return (
-        <div className="space-y-3">
+        <div className="max-h-[60vh] space-y-3 overflow-y-auto pr-2">
             {members.map((member) => {
                 const attendance =
                     attendances.find(
@@ -84,7 +83,6 @@ export default function AttendanceEditor({
                             <p className="text-sm text-slate-500">
                                 {member.number}
                             </p>
-
                         </div>
 
                         <select
