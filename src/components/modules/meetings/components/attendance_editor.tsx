@@ -53,7 +53,7 @@ export default function AttendanceEditor({
     }
 
     return (
-        <div className="max-h-[60vh] space-y-3 overflow-y-auto pr-2">
+        <div className="max-h-[40vh] space-y-3 overflow-y-auto pr-2">
             {members.map((member) => {
                 const attendance =
                     attendances.find(

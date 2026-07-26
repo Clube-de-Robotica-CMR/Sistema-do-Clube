@@ -313,7 +313,7 @@ export default function MeetingDetailsDialog({
                             }
                         />
                     ) : (
-                        <div className="space-y-3">
+                        <div className="max-h-[40vh] space-y-3 overflow-y-auto pr-2">
                             {members.map((member) => {
                                 const attendance =
                                     attendances.find(
