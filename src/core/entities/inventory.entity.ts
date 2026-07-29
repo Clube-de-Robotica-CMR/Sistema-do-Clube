@@ -7,7 +7,7 @@ export const InventoryClassificationSchema = z.enum(
     ]
 )
 export const InventoryCollectionSchema = z.enum(['Arduino', 'LEGO SPIKE', 'LEGO EV3'])
-export const InventoryStatusSchema = z.enum(['Funcionando', 'Sem funcionamento']);
+export const InventoryStatusSchema = z.enum(['Funcionando', 'Sem funcionamento', 'A analisar']);
 
 export const InventoryItemSchema = z.object({
     id: z.uuid(),

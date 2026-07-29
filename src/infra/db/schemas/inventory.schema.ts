@@ -15,7 +15,7 @@ export const collectionEnum = pgEnum('collection_enum',
 
 export const statusEnum = pgEnum('status_enum',
     [
-        'Funcionando', 'Sem funcionamento'
+        'Funcionando', 'Sem funcionamento', 'A analisar'
     ]
 )
 
