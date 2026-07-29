@@ -48,6 +48,7 @@ const collections: InventoryCollection[] = [
 const statuses: InventoryStatus[] = [
     "Funcionando",
     "Sem funcionamento",
+    "A analisar",
 ];
 
 type EditableItem = {
