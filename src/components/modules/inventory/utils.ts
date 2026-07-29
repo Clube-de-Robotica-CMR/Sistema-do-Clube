@@ -21,6 +21,14 @@ export function getInventoryStatusColor(
                 text:
                     "text-red-700",
             };
+
+        case "A analisar":
+            return {
+                background:
+                    "bg-yellow-100",
+                text:
+                    "text-yellow-700",
+            };
     }
 }
 
