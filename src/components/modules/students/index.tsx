@@ -22,7 +22,7 @@ import DeleteStudentDialog from "./components/delete_student_dialog";
 import StudentDetailsDialog from "./components/student_details_dialog";
 import StudentFiltersDialog from "./components/student_filters_dialog";
 import { generateStudentsPDF } from "@/lib/students_pdf";
-import ExportPdfDialog from "./components/export_pdf_dialog";
+import ExportPdfDialog from "@/components/ui/export_pdf_dialog";
 
 interface StudentsModuleProps {
     role: "admin" | "diretoria";
@@ -230,6 +230,7 @@ export default function StudentsModule({
             />
 
             <ExportPdfDialog
+                file="Relação_Robótica.pdf"
                 open={pdfOpen}
                 onClose={() => setPdfOpen(false)}
                 onPreparePdf={generateStudentsPDF}

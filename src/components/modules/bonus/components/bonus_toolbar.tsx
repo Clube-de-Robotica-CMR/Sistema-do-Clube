@@ -1,17 +1,21 @@
-import { SlidersHorizontal } from "lucide-react";
+import { FileText, SlidersHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/cn";
+import Button from "@/components/ui/button";
 
 interface BonusToolbarProps {
 
     filterApplied: boolean;
 
     onFilter(): void;
+
+    onExportPDF(): void;
 }
 
 export default function BonusToolbar({
     filterApplied,
     onFilter,
+    onExportPDF,
 }: BonusToolbarProps) {
     return (
         <div className="flex items-center gap-4">
@@ -37,6 +41,16 @@ export default function BonusToolbar({
                 >
                     <SlidersHorizontal size={20} />
                 </button>
+
+                <Button
+                                    variant="secondary"
+                                    className="h-12 w-auto px-5"
+                                    onClick={onExportPDF}
+                                >
+                                    <FileText size={18} />
+                
+                                    <span>PDF</span>
+                                </Button>
             </div>
         </div>
     );

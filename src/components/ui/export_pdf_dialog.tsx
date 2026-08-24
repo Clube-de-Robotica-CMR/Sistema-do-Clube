@@ -4,12 +4,14 @@ import jsPDF from "jspdf";
 import ConfirmDialog from "@/components/ui/confirm_dialog";
 
 interface ExportPdfDialogProps {
+    file: string;
     open: boolean;
     onClose(): void;
     onPreparePdf(): Promise<jsPDF>;
 }
 
 export default function ExportPdfDialog({
+    file,
     open,
     onClose,
     onPreparePdf,
@@ -44,7 +46,7 @@ export default function ExportPdfDialog({
 
     function handleDownload() {
         if (!pdfDoc) return;
-        pdfDoc.save("Relacao_Robotica.pdf");
+        pdfDoc.save(file);
         onClose();
     }
 
@@ -67,10 +69,10 @@ export default function ExportPdfDialog({
         <ConfirmDialog
             open={open}
             variant="primary"
-            title={loading ? "Gerando PDF..." : "Relatório Pronto!"}
+            title={loading ? "Gerando PDF..." : "Arquivo pronto!"}
             description={
                 loading
-                    ? "Aguarde enquanto preparamos a relação dos alunos."
+                    ? "Aguarde enquanto preparamos o arquivo."
                     : "O arquivo foi gerado com sucesso. Clique no botão abaixo para baixar."
             }
             confirmText={loading ? "Gerando..." : "Baixar PDF"}

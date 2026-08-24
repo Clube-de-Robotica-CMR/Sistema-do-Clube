@@ -13,6 +13,8 @@ import BonusTable from "./components/bonus_table";
 import BonusLoading from "./components/bonus_loading";
 import BonusEmpty from "./components/bonus_empty";
 import BonusFilterDialog from "./components/bonus_filter_dialog";
+import ExportPdfDialog from "@/components/ui/export_pdf_dialog";
+import { generateBonusPDF } from "@/lib/bonus_pdf";
 
 export default function BonusModule() {
     const [rows, setRows] =
@@ -26,6 +28,15 @@ export default function BonusModule() {
 
     const [filterOpen, setFilterOpen] =
         useState(false);
+
+    const [pdfFilterOpen, setPdfFilterOpen] =
+        useState(false);
+
+    const [pdfOpen, setPdfOpen] =
+        useState(false);
+
+    const [pdfQuarter, setPdfQuarter] =
+        useState<Quarter>("1°");
 
     async function loadRows() {
         try {
@@ -69,6 +80,9 @@ export default function BonusModule() {
                     onFilter={() =>
                         setFilterOpen(true)
                     }
+                    onExportPDF={() =>
+                        setPdfFilterOpen(true)
+                    }
                 />
 
                 <div className="flex-1">
@@ -95,6 +109,28 @@ export default function BonusModule() {
 
                     setFilterOpen(false);
                 }}
+            />
+
+            <BonusFilterDialog
+                open={pdfFilterOpen}
+                quarter={pdfQuarter}
+                onClose={() =>
+                    setPdfFilterOpen(false)
+                }
+                onApply={(newQuarter) => {
+                    setPdfQuarter(newQuarter);
+                    setPdfFilterOpen(false);
+                    setPdfOpen(true);
+                }}
+            />
+
+            <ExportPdfDialog
+                file={`${pdfQuarter}_trimestre_GIP.pdf`}
+                open={pdfOpen}
+                onClose={() => setPdfOpen(false)}
+                onPreparePdf={() =>
+                    generateBonusPDF(pdfQuarter)
+                }
             />
         </>
     );
