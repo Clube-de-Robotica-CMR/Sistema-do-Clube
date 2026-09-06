@@ -2,7 +2,7 @@
 
 Sistema web completo para gerenciamento administrativo de um Clube de Robótica.
 
-A plataforma centraliza a administração de membros, encontros, competições, inventário e usuários, oferecendo ferramentas para controle de presença, cálculo automático de métricas, gestão de materiais e autenticação segura.
+A plataforma centraliza a administração de membros, grupos, encontros, competições, inventário e usuários, oferecendo ferramentas para controle de presença, cálculo automático de métricas, gestão de materiais e autenticação segura.
 
 O projeto foi desenvolvido como um **monólito em Next.js**, reunindo frontend e backend na mesma aplicação. A camada de domínio segue os princípios da **Clean Architecture (Ports and Adapters)**, mantendo as regras de negócio desacopladas da infraestrutura.
 
@@ -34,6 +34,17 @@ O projeto foi desenvolvido como um **monólito em Next.js**, reunindo frontend e
 - Atualização de informações
 - Exclusão individual ou em massa
 - Relatórios
+- Associação de membros a grupos
+
+---
+
+## 🧩 Grupos
+
+- Criação e edição de grupos
+- Quantidade variável de membros
+- Visualização dos integrantes de cada grupo
+- Associação e transferência de membros entre grupos
+- Exclusão de grupos sem excluir seus membros
 
 ---
 
@@ -116,8 +127,10 @@ Painel exclusivo para administradores.
 
 - Next.js API Routes
 - TypeScript
-- PostgreSQL (Supabase)
+- PostgreSQL (Neon)
 - Drizzle ORM + Drizzle Kit
+- Neon Serverless (`neon-serverless`)
+- WebSocket (`ws`) para suporte a transações
 - JWT
 - Bcrypt
 - Zod
@@ -253,6 +266,10 @@ Gerenciamento dos membros do clube.
 | `update` | `{ id, ...camposModificados }` | Atualiza o registro do membro mesclando os dados enviados e revalidando o schema completo. | Autenticado |
 | `delete` | `{ id }` | Remove o membro do sistema. | Autenticado |
 | `delete_all` | Nenhum | Remove todos os membros do sistema. | Admin |
+| `read_groups` | Nenhum | Lista os grupos cadastrados juntamente com seus membros. | Autenticado |
+| `create_group` | `{ name, member_ids }` | Cria um grupo e associa os membros informados. | Autenticado |
+| `update_group` | `{ id, name?, member_ids? }` | Atualiza o grupo e, quando informado, substitui sua composição de membros. | Autenticado |
+| `delete_group` | `{ id }` | Exclui o grupo sem excluir seus membros. | Autenticado |
 
 ---
 
