@@ -36,9 +36,9 @@ export default function BonusTable({
                             GIP
                         </th>
 
-                        <th className="w-28 px-6 py-4 text-center">
+                        {/* <th className="w-28 px-6 py-4 text-center">
                             Faltas
-                        </th>
+                        </th> */}
                     </tr>
                 </thead>
 

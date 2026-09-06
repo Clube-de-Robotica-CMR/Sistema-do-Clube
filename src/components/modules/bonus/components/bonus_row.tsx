@@ -47,7 +47,7 @@ export default function BonusRow({
                 </span>
             </td>
 
-            <td className="px-6 py-4 text-center">
+            {/* <td className="px-6 py-4 text-center">
                 <span
                     className={cn(
                         "inline-flex rounded-full px-3 py-1 text-sm font-semibold",
@@ -56,7 +56,7 @@ export default function BonusRow({
                 >
                     {row.unjustified_absences_in_year} / 5
                 </span>
-            </td>
+            </td> */}
         </tr>
     );
 }

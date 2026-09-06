@@ -1,6 +1,8 @@
 import { MeetingsRepository } from "@/core/ports/meetings/meetings_repository";
 import { NotFoundError } from "../errors/domain-errors";
 import { AttendanceStatus, AttendanceStatusSchema, FindMeetingsFilter, MetricSearch, Quarter, RegisterAttendanceDTO } from "../entities/meeting.entity";
+import { DrizzleMembersRepository } from "@/infra/adapters/output/drizzle/members_repository";
+import { MembersRepository } from "../ports/members/members_repository";
 
 export interface MemberMetricsResponse {
   member_id: string;
@@ -14,7 +16,7 @@ export interface MemberMetricsResponse {
 }
 
 export class MeetingsUseCase {
-  constructor(private meetingsRepository: MeetingsRepository) { }
+  constructor(private meetingsRepository: MeetingsRepository, private membersRepository: MembersRepository) { }
 
   async register_attendance(data: RegisterAttendanceDTO): Promise<void> {
     const meeting = await this.meetingsRepository.get_meeting_by_id(data.meeting_id);
@@ -36,17 +38,20 @@ export class MeetingsUseCase {
   async get_member_metrics(search: MetricSearch, member_id: string): Promise<MemberMetricsResponse> {
     const periodFilter: FindMeetingsFilter = { quarter: search.quarter };
 
-    const allMeetings = await this.meetingsRepository.get_meetings(periodFilter);
-    const totalMeetings = allMeetings ? allMeetings.length : 0;
-
     const memberAttendances = await this.meetingsRepository.get_member_attendances_by_period(member_id, periodFilter);
 
-    const presents = memberAttendances
+    const presences = memberAttendances
       ? memberAttendances.filter(att => att.status === AttendanceStatusSchema.enum.Presente).length
       : 0;
 
+    const absenses = memberAttendances
+      ? memberAttendances.filter(att => att.status === AttendanceStatusSchema.enum.Falta).length
+      : 0;
+
+    const totalMeetings = presences + absenses;
+
     const attendancePercentage = totalMeetings > 0
-      ? Math.round((presents / totalMeetings) * 100)
+      ? Math.round((presences / totalMeetings) * 100)
       : 0;
 
     let gradeBonus = 0;
@@ -55,6 +60,9 @@ export class MeetingsUseCase {
     } else if (attendancePercentage > 25) {
       gradeBonus = 0.5;
     }
+
+    const member = await this.membersRepository.get_by_id(member_id);
+    if (member?.level === "Nível A") gradeBonus = 1.0;
 
     const unjustifiedAbsences = await this.meetingsRepository.get_member_unjustified_absences(member_id);
     const totalUnjustifiedAbsences = unjustifiedAbsences ? unjustifiedAbsences.length : 0;
@@ -66,7 +74,7 @@ export class MeetingsUseCase {
       member_id,
       quarter: search.quarter,
       total_meetings_in_quarter: totalMeetings,
-      presents_in_quarter: presents,
+      presents_in_quarter: presences,
       attendance_percentage: attendancePercentage,
       grade_bonus: gradeBonus,
       unjustified_absences_in_year: totalUnjustifiedAbsences,

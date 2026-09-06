@@ -12,7 +12,7 @@ import z from "zod";
 
 const meetingsRepo = new DrizzleMeetingsRepository();
 const membersRepo = new DrizzleMembersRepository();
-const meetingsUseCase = new MeetingsUseCase(meetingsRepo);
+const meetingsUseCase = new MeetingsUseCase(meetingsRepo, membersRepo);
 
 const router = create_router({
     "create": async (req, res) => {
