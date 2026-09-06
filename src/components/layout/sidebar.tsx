@@ -36,8 +36,8 @@ const items: SidebarItem[] = [
     { id: "groups", label: "Grupos", icon: GroupIcon },
     { id: "meetings", label: "Encontros", icon: CalendarDays },
     { id: "bonus", label: "Bônus (GIP)", icon: Medal },
-    { id: "competitions", label: "Competições", icon: Trophy },
-    { id: "ranking", label: "Ascensão", icon: TrendingUp },
+    // { id: "competitions", label: "Competições", icon: Trophy },
+    // { id: "ranking", label: "Ascensão", icon: TrendingUp },
     { id: "inventory", label: "Inventário", icon: Boxes },
     { id: "users", label: "Usuários", icon: Shield, adminOnly: true },
 ];

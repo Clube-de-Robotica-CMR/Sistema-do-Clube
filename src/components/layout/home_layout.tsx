@@ -118,6 +118,7 @@ export default function HomeLayout({
                 );
 
             case "competitions":
+                // if (true) return
                 return (
                     <div className="p-8">
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
@@ -127,6 +128,7 @@ export default function HomeLayout({
                 );
 
             case "ranking":
+                // if (true) return
                 return (
                     <div className="p-8">
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
