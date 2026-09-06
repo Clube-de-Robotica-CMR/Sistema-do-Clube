@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {
     Users,
+    UsersRound,
     CalendarDays,
     Medal,
     Trophy,
@@ -32,6 +33,7 @@ interface SidebarItem {
 
 const items: SidebarItem[] = [
     { id: "students", label: "Alunos", icon: Users },
+    { id: "groups", label: "Grupos", icon: UsersRound },
     { id: "meetings", label: "Encontros", icon: CalendarDays },
     { id: "bonus", label: "Bônus (GIP)", icon: Medal },
     { id: "competitions", label: "Competições", icon: Trophy },

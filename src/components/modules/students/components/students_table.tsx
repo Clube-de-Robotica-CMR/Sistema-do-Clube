@@ -1,25 +1,35 @@
 import Card from "@/components/ui/card";
 
-import { Member } from "@/core/entities/member.entity";
+import type {
+    GroupWithMembers,
+    Member,
+} from "@/core/entities/member.entity";
 
 import StudentsRow from "./students_row";
 
 interface StudentsTableProps {
     members: Member[];
+    groups: GroupWithMembers[];
 
     onView(member: Member): void;
-
     onEdit(member: Member): void;
-
     onDelete(member: Member): void;
 }
 
 export default function StudentsTable({
     members,
+    groups,
     onView,
     onEdit,
     onDelete,
 }: StudentsTableProps) {
+    const groupNames = new Map(
+        groups.map((group) => [
+            group.id,
+            group.name,
+        ])
+    );
+
     return (
         <Card className="overflow-hidden">
             <table className="w-full">
@@ -45,6 +55,10 @@ export default function StudentsTable({
                             Nível
                         </th>
 
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+                            Grupo
+                        </th>
+
                         <th className="w-32 px-6 py-4" />
                     </tr>
                 </thead>
@@ -54,6 +68,13 @@ export default function StudentsTable({
                         <StudentsRow
                             key={member.id}
                             member={member}
+                            groupName={
+                                member.group_id
+                                    ? groupNames.get(
+                                        member.group_id
+                                    )
+                                    : undefined
+                            }
                             onView={onView}
                             onEdit={onEdit}
                             onDelete={onDelete}

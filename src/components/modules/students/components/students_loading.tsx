@@ -12,6 +12,7 @@ export default function StudentsLoading() {
                             "Turma",
                             "Campo",
                             "Nível",
+                            "Grupo",
                             ""
                         ].map((title) => (
                             <th
@@ -30,7 +31,7 @@ export default function StudentsLoading() {
                             key={index}
                             className="border-b last:border-none"
                         >
-                            {Array.from({ length: 6 }).map((_, cell) => (
+                            {Array.from({ length: 7 }).map((_, cell) => (
                                 <td
                                     key={cell}
                                     className="px-6 py-5"

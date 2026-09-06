@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 
 import type {
     FindMembersFilter,
+    GroupWithMembers,
     Member,
 } from "@/core/entities/member.entity";
 
 import {
     deleteAllMembers,
+    findGroups,
     findMembers,
 } from "./services";
 
@@ -57,7 +59,11 @@ export default function StudentsModule({
     const [deleteAllOpen, setDeleteAllOpen] =
         useState(false);
 
-    const [pdfOpen, setPdfOpen] = useState(false);
+    const [pdfOpen, setPdfOpen] =
+        useState(false);
+
+    const [groups, setGroups] =
+        useState<GroupWithMembers[]>([]);
 
 
     const hasFilters = Object.values(filters).some(
@@ -86,8 +92,9 @@ export default function StudentsModule({
     }
 
     useEffect(() => {
-        loadMembers();
-    }, []);
+    loadMembers();
+    loadGroups();
+}, []);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -96,6 +103,11 @@ export default function StudentsModule({
 
         return () => clearTimeout(timeout);
     }, [search, filters]);
+
+    async function loadGroups() {
+    const response = await findGroups();
+    setGroups(response);
+}
 
     function handleFilter() {
         setFilterOpen(true);
@@ -165,32 +177,37 @@ export default function StudentsModule({
                         />
                     ) : (
                         <StudentsTable
-                            members={members}
-                            onView={handleView}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                        />
+    members={members}
+    groups={groups}
+    onView={handleView}
+    onEdit={handleEdit}
+    onDelete={handleDelete}
+/>
                     )}
                 </div>
             </div>
 
             <StudentDetailsDialog
-                member={viewingMember}
-                open={viewingMember !== null}
-                onClose={() =>
-                    setViewingMember(null)
-                }
-            />
+    member={viewingMember}
+    groups={groups}
+    open={viewingMember !== null}
+    onClose={() =>
+        setViewingMember(null)
+    }
+/>
 
             <StudentFiltersDialog
-                open={filterOpen}
-                filters={filters}
-                onClose={() => setFilterOpen(false)}
-                onApply={(newFilters) => {
-                    setFilters(newFilters);
-                    setFilterOpen(false);
-                }}
-            />
+    open={filterOpen}
+    filters={filters}
+    groups={groups}
+    onClose={() =>
+        setFilterOpen(false)
+    }
+    onApply={(newFilters) => {
+        setFilters(newFilters);
+        setFilterOpen(false);
+    }}
+/>
 
             <CreateStudentDialog
                 open={createOpen}

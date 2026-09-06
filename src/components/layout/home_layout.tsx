@@ -15,6 +15,7 @@ import CompetitionsModule from "../modules/competitions";
 import RankingModule from "../modules/ranking";
 import InventoryModule from "../modules/inventory";
 import UsersModule from "../modules/users";
+import GroupsModule from "../modules/groups";
 
 interface HomeLayoutProps {
     role: "admin" | "diretoria";
@@ -83,6 +84,17 @@ export default function HomeLayout({
                         <div className="rounded-3xl border bg-white p-10 shadow-sm">
                             <StudentsModule role={role} />
 
+                        </div>
+                    </div>
+                );
+
+            case "groups":
+                // if (true) return
+
+                return (
+                    <div className="p-8">
+                        <div className="rounded-3xl border bg-white p-10 shadow-sm">
+                            <GroupsModule />
                         </div>
                     </div>
                 );

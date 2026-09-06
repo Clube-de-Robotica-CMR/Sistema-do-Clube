@@ -11,15 +11,15 @@ import {
     type FindMembersFilter,
     type MemberField,
     type MemberLevel,
+    type GroupWithMembers,
 } from "@/core/entities/member.entity";
 
 interface StudentFiltersDialogProps {
     open: boolean;
-
     filters: FindMembersFilter;
+    groups: GroupWithMembers[];
 
     onClose(): void;
-
     onApply(filters: FindMembersFilter): void;
 }
 
@@ -36,6 +36,7 @@ const fields: (MemberField | "")[] = [
 export default function StudentFiltersDialog({
     open,
     filters,
+    groups,
     onClose,
     onApply,
 }: StudentFiltersDialogProps) {
@@ -50,6 +51,9 @@ export default function StudentFiltersDialog({
 
     const [director, setDirector] =
         useState<"" | "true" | "false">("");
+
+    const [group, setGroup] =
+        useState("");
 
     useEffect(() => {
         if (!open) return;
@@ -73,6 +77,12 @@ export default function StudentFiltersDialog({
         } else {
             setDirector("");
         }
+
+        if (filters.group_id === null) {
+            setGroup("__none__");
+        } else {
+            setGroup(filters.group_id ?? "");
+        }
     }, [filters, open]);
 
     function handleApply(
@@ -84,10 +94,18 @@ export default function StudentFiltersDialog({
             class: studentClass || undefined,
             level: level || undefined,
             field: field || undefined,
+
             is_director:
                 director === ""
                     ? undefined
                     : director === "true",
+
+            group_id:
+                group === ""
+                    ? undefined
+                    : group === "__none__"
+                        ? null
+                        : group,
         });
 
         onClose();
@@ -98,6 +116,7 @@ export default function StudentFiltersDialog({
         setLevel("");
         setField("");
         setDirector("");
+        setGroup("");
 
         onApply({});
 
@@ -135,6 +154,44 @@ export default function StudentFiltersDialog({
                             )
                         }
                     />
+
+                    <label className="block space-y-2">
+                        <span className="text-sm font-medium">
+                            Grupo
+                        </span>
+
+                        <select
+                            value={group}
+                            onChange={(event) =>
+                                setGroup(event.target.value)
+                            }
+                            className="
+            h-12
+            w-full
+            rounded-xl
+            border
+            border-slate-200
+            px-4
+        "
+                        >
+                            <option value="">
+                                Todos os grupos
+                            </option>
+
+                            <option value="__none__">
+                                Sem grupo
+                            </option>
+
+                            {groups.map((group) => (
+                                <option
+                                    key={group.id}
+                                    value={group.id}
+                                >
+                                    {group.name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
 
                     <div className="grid grid-cols-2 gap-4">
                         <label className="space-y-2">

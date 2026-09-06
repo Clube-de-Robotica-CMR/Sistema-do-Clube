@@ -11,6 +11,7 @@ import {
 
 export type HomeModule =
     | "students"
+    | "groups"
     | "meetings"
     | "bonus"
     | "competitions"

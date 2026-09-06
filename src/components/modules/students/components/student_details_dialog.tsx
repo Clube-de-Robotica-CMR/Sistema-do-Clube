@@ -1,12 +1,15 @@
 import Card from "@/components/ui/card";
 import Dialog from "@/components/ui/dialog";
 
-import type { Member } from "@/core/entities/member.entity";
+import type {
+    GroupWithMembers,
+    Member,
+} from "@/core/entities/member.entity";
 
 interface StudentDetailsDialogProps {
     open: boolean;
-
     member: Member | null;
+    groups: GroupWithMembers[];
 
     onClose(): void;
 }
@@ -34,11 +37,18 @@ function Field({
 export default function StudentDetailsDialog({
     open,
     member,
+    groups,
     onClose,
 }: StudentDetailsDialogProps) {
     if (!member) {
         return null;
     }
+
+    const groupName = member.group_id
+        ? groups.find(
+            (group) => group.id === member.group_id
+        )?.name
+        : undefined;
 
     return (
         <Dialog
@@ -91,6 +101,11 @@ export default function StudentDetailsDialog({
                     <Field
                         label="Nível"
                         value={member.level}
+                    />
+
+                    <Field
+                        label="Grupo"
+                        value={groupName ?? "Sem grupo"}
                     />
 
                     <Field

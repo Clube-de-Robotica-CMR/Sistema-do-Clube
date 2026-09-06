@@ -5,6 +5,7 @@ import type {
     CreateMemberDTO,
     UpdateMemberDTO,
     FindMembersFilter,
+    GroupWithMembers,
 } from "@/core/entities/member.entity";
 
 export async function findMembers(
@@ -14,6 +15,14 @@ export async function findMembers(
         "members",
         "read",
         filters
+    );
+}
+
+export async function findGroups():
+    Promise<GroupWithMembers[]> {
+    return rpcClient<GroupWithMembers[]>(
+        "members",
+        "read_groups"
     );
 }
 
@@ -37,7 +46,9 @@ export async function updateMember(
     );
 }
 
-export async function deleteMember(id: string): Promise<void> {
+export async function deleteMember(
+    id: string
+): Promise<void> {
     await rpcClient(
         "members",
         "delete",
@@ -45,7 +56,8 @@ export async function deleteMember(id: string): Promise<void> {
     );
 }
 
-export async function deleteAllMembers(): Promise<void> {
+export async function deleteAllMembers():
+    Promise<void> {
     await rpcClient(
         "members",
         "delete_all"

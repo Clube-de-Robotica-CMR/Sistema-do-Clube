@@ -6,6 +6,7 @@ interface HeaderProps {
 
 const titles: Record<HomeModule, string> = {
     students: "Alunos",
+    groups: "Grupos",
     meetings: "Encontros",
     bonus: "Bônus (GIP)",
     competitions: "Competições",

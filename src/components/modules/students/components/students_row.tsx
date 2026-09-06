@@ -5,6 +5,8 @@ import type { Member } from "@/core/entities/member.entity";
 interface StudentsRowProps {
     member: Member;
 
+    groupName?: string;
+
     onView(member: Member): void;
 
     onEdit(member: Member): void;
@@ -14,6 +16,7 @@ interface StudentsRowProps {
 
 export default function StudentsRow({
     member,
+    groupName,
     onView,
     onEdit,
     onDelete,
@@ -38,6 +41,12 @@ export default function StudentsRow({
 
             <td className="px-6 py-4">
                 {member.level}
+            </td>
+
+            <td className="px-6 py-4">
+                {
+                    groupName ? groupName : "Sem grupo"
+                }
             </td>
 
             <td className="px-6 py-4">
