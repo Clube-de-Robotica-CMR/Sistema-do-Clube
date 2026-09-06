@@ -241,7 +241,7 @@ const router = create_router({
             }
         }
 
-        if (validatedBody.member_ids) {
+        if (validatedBody.member_ids !== undefined) {
             const selectedMembers =
                 await membersRepo.get_by_ids(
                     validatedBody.member_ids
