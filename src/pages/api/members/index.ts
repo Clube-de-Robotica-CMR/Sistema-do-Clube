@@ -1,7 +1,15 @@
 import { api_handler } from '@/infra/adapters/input/api_handler';
 import { create_router } from '@/infra/adapters/input/router';
 import { DrizzleMembersRepository } from '@/infra/adapters/output/drizzle/members_repository';
-import { CreateMemberSchema, UpdateMemberSchema, MemberSchema, SearchFilterSchema } from '@/core/entities/member.entity';
+import {
+    CreateGroupSchema,
+    CreateMemberSchema,
+    GroupSchema,
+    MemberSchema,
+    SearchFilterSchema,
+    UpdateGroupSchema,
+    UpdateMemberSchema,
+} from "@/core/entities/member.entity";
 import { NotFoundError, RequestError } from '@/core/errors/domain-errors';
 import { require_login } from '@/infra/adapters/input/require_login';
 import { get_data_from_request } from '@/infra/adapters/input/get_data';
@@ -130,7 +138,170 @@ const router = create_router({
             ok: true,
             data: report,
         });
-    }
+    },
+
+    "read_groups": async (req, res) => {
+        const groups =
+            await membersRepo.get_groups();
+
+        return res.status(200).json({
+            ok: true,
+            data: groups,
+        });
+    },
+
+    "create_group": async (req, res) => {
+        const data =
+            get_data_from_request(req);
+
+        const validatedBody =
+            CreateGroupSchema.parse(data);
+
+        const existing =
+            await membersRepo.get_group_by_name(
+                validatedBody.name
+            );
+
+        if (existing) {
+            const msg =
+                `Já existe um grupo chamado "${validatedBody.name}".`;
+
+            throw new RequestError(msg,
+                {
+                    name: [msg],
+                }
+            );
+        }
+
+        const selectedMembers =
+            await membersRepo.get_by_ids(
+                validatedBody.member_ids
+            );
+
+        if (
+            selectedMembers.length !==
+            validatedBody.member_ids.length
+        ) {
+            const msg = "Um ou mais membros selecionados não existem."
+            throw new RequestError(msg,
+                {
+                    members_ids: [msg]
+                }
+            );
+        }
+
+        await membersRepo.create_group(
+            validatedBody
+        );
+
+        return res.status(201).json({
+            ok: true,
+            message:
+                "Grupo criado com sucesso.",
+        });
+    },
+
+    "update_group": async (req, res) => {
+        const data =
+            get_data_from_request(req);
+
+        const validatedBody =
+            UpdateGroupSchema.parse(data);
+
+        const oldGroup =
+            await membersRepo.get_group_by_id(
+                validatedBody.id
+            );
+
+        if (!oldGroup) {
+            throw new NotFoundError(
+                "Grupo não encontrado."
+            );
+        }
+
+        if (
+            validatedBody.name &&
+            validatedBody.name !== oldGroup.name
+        ) {
+            const existing =
+                await membersRepo.get_group_by_name(
+                    validatedBody.name
+                );
+
+            if (existing) {
+                const msg =
+                    `Já existe um grupo chamado "${validatedBody.name}".`;
+
+                throw new RequestError(
+                    msg,
+                    {
+                        name: [msg],
+                    }
+                );
+            }
+        }
+
+        if (validatedBody.member_ids) {
+            const selectedMembers =
+                await membersRepo.get_by_ids(
+                    validatedBody.member_ids
+                );
+
+            if (
+                selectedMembers.length !==
+                validatedBody.member_ids.length
+            ) {
+                const msg = "Um ou mais membros selecionados não existem."
+                throw new RequestError(msg,
+                    {
+                        members_ids: [msg]
+                    }
+                );
+            }
+        }
+
+        await membersRepo.update_group(
+            validatedBody
+        );
+
+        return res.status(200).json({
+            ok: true,
+            message:
+                "Grupo atualizado com sucesso.",
+        });
+    },
+
+    "delete_group": async (req, res) => {
+        const data =
+            get_data_from_request(req);
+
+        const { id } = z
+            .object({
+                id: z.uuid(
+                    "ID inválido."
+                ),
+            })
+            .parse(data);
+
+        const group =
+            await membersRepo.get_group_by_id(
+                id
+            );
+
+        if (!group) {
+            throw new NotFoundError(
+                "Grupo não encontrado."
+            );
+        }
+
+        await membersRepo.delete_group(id);
+
+        return res.status(200).json({
+            ok: true,
+            message:
+                "Grupo removido com sucesso.",
+        });
+    },
 },
     require_login
 );
